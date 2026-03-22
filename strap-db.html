@@ -511,12 +511,80 @@
       }
       .modal-close:hover { background: var(--surface-container-high); }
       .modal-body { padding: 20px 24px 24px; }
+      .modal-img { width: 100%; max-height: 280px; object-fit: contain; background: var(--surface-container-low); border-radius: 6px; margin-bottom: 16px; }
+      .modal-img-placeholder { width: 100%; height: 180px; background: var(--surface-container-low); border-radius: 6px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; }
+      .modal-img-placeholder .material-symbols-outlined { font-size: 48px; color: var(--on-surface-variant); opacity: 0.1; }
+      .modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+      .modal-tag { font-size: 11px; padding: 4px 10px; border-radius: 4px; background: var(--surface-container-high); color: var(--on-surface-variant); }
       .detail-grid { display: grid; grid-template-columns: 100px 1fr; gap: 10px 12px; }
       .detail-key { font-size: 12px; color: var(--on-surface-variant); opacity: 0.45; font-weight: 500; padding-top: 1px; }
       .detail-val { font-size: 13px; color: var(--on-surface); word-break: break-all; }
       .detail-val a { color: var(--secondary); text-decoration: none; }
       .detail-val a:hover { opacity: 0.7; }
       .modal-divider { height: 1px; background: var(--surface-container-high); margin: 14px 0; }
+
+      /* Table / List View */
+      .product-table { width: 100%; border-collapse: separate; border-spacing: 0; display: none; }
+      .product-table th {
+        text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.1em; color: var(--on-surface-variant); opacity: 0.45;
+        padding: 12px 16px; border-bottom: 1px solid var(--surface-container-high);
+        position: sticky; top: 64px; background: var(--background); z-index: 5;
+      }
+      .product-table td {
+        padding: 10px 16px; font-size: 13px; color: var(--on-surface);
+        border-bottom: 1px solid rgba(197,198,204,0.15);
+        vertical-align: middle;
+      }
+      .product-table tr { cursor: pointer; transition: background 0.1s; }
+      .product-table tbody tr:hover { background: var(--surface-container-low); }
+      .table-img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; background: var(--surface-container-low); vertical-align: middle; }
+      .table-img-placeholder { width: 40px; height: 40px; border-radius: 4px; background: var(--surface-container-low); display: inline-flex; align-items: center; justify-content: center; }
+      .table-img-placeholder .material-symbols-outlined { font-size: 18px; color: var(--on-surface-variant); opacity: 0.12; }
+      .table-name { font-weight: 600; color: var(--primary); }
+      .table-name:hover { color: var(--secondary); }
+
+      /* Add New SKU Modal */
+      .sku-modal-overlay {
+        position: fixed; inset: 0; background: rgba(26,35,50,0.45);
+        backdrop-filter: blur(4px); z-index: 1000;
+        display: flex; align-items: center; justify-content: center;
+        padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+      }
+      .sku-modal-overlay.open { opacity: 1; pointer-events: auto; }
+      .sku-modal {
+        background: var(--surface-container-lowest); border-radius: 12px;
+        width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto;
+        transform: scale(0.95) translateY(10px); transition: transform 0.2s;
+        box-shadow: 0 12px 40px rgba(26,28,27,0.06);
+      }
+      .sku-modal-overlay.open .sku-modal { transform: scale(1) translateY(0); }
+      .sku-form { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+      .sku-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .sku-field { display: flex; flex-direction: column; gap: 4px; }
+      .sku-field.full { grid-column: 1 / -1; }
+      .sku-field label { font-size: 11px; font-weight: 600; color: var(--on-surface-variant); opacity: 0.5; text-transform: uppercase; letter-spacing: 0.08em; }
+      .sku-field input, .sku-field select, .sku-field textarea {
+        padding: 10px 12px; border: 1px solid rgba(197,198,204,0.3); border-radius: 4px;
+        font-size: 14px; font-family: inherit; color: var(--on-surface);
+        background: var(--surface-container-lowest); outline: none; transition: border-color 0.15s;
+      }
+      .sku-field input:focus, .sku-field select:focus, .sku-field textarea:focus { border-color: var(--secondary); }
+      .sku-field textarea { resize: vertical; min-height: 60px; }
+      .sku-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 8px; }
+      .sku-btn-cancel {
+        padding: 10px 20px; border: 1px solid rgba(197,198,204,0.3); border-radius: 4px;
+        background: transparent; color: var(--on-surface-variant); font-size: 14px;
+        cursor: pointer; font-family: inherit; transition: all 0.15s;
+      }
+      .sku-btn-cancel:hover { border-color: var(--on-surface-variant); }
+      .sku-btn-save {
+        padding: 10px 24px; border: none; border-radius: 4px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-container));
+        color: white; font-size: 14px; font-weight: 600;
+        cursor: pointer; font-family: inherit; transition: all 0.15s;
+      }
+      .sku-btn-save:hover { opacity: 0.9; }
 
       /* MOBILE */
       .mobile-filters {
@@ -674,20 +742,119 @@
           <div class="skeleton"></div><div class="skeleton"></div>
           <div class="skeleton"></div><div class="skeleton"></div>
         </div>
+
+        <!-- Product Table (List View) -->
+        <table class="product-table" id="productTable">
+          <thead>
+            <tr>
+              <th style="width:50px"></th>
+              <th>제품명</th>
+              <th>카테고리</th>
+              <th>재질</th>
+              <th>체결방식</th>
+              <th>사이즈</th>
+              <th>컬러</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody id="productTableBody"></tbody>
+        </table>
       </div>
     </div>
 
     <!-- FAB -->
-    <button class="fab"><span class="material-symbols-outlined">add</span></button>
+    <button class="fab" id="fabBtn"><span class="material-symbols-outlined">add</span></button>
 
-    <!-- MODAL -->
+    <!-- Product Detail Modal -->
     <div class="modal-overlay" id="modalOverlay">
-      <div class="modal" id="modal">
+      <div class="modal" id="modal" style="max-width:600px">
         <div class="modal-header">
           <h2 id="modalTitle"></h2>
           <button class="modal-close" id="modalClose">✕</button>
         </div>
         <div class="modal-body" id="modalBody"></div>
+      </div>
+    </div>
+
+    <!-- Add New SKU Modal -->
+    <div class="sku-modal-overlay" id="skuModalOverlay">
+      <div class="sku-modal">
+        <div class="modal-header">
+          <h2>Add New SKU</h2>
+          <button class="modal-close" id="skuModalClose">✕</button>
+        </div>
+        <div class="sku-form">
+          <div class="sku-form-row">
+            <div class="sku-field full">
+              <label>제품명</label>
+              <input type="text" placeholder="예: 프리미엄 밀레니즈 루프 스트랩" />
+            </div>
+          </div>
+          <div class="sku-form-row">
+            <div class="sku-field">
+              <label>카테고리</label>
+              <select id="skuCategory">
+                <option value="">선택</option>
+              </select>
+            </div>
+            <div class="sku-field">
+              <label>사이즈</label>
+              <input type="text" placeholder="예: 20mm" />
+            </div>
+          </div>
+          <div class="sku-form-row">
+            <div class="sku-field">
+              <label>재질</label>
+              <select id="skuMaterial">
+                <option value="">선택</option>
+              </select>
+            </div>
+            <div class="sku-field">
+              <label>체결방식</label>
+              <select id="skuFastening">
+                <option value="">선택</option>
+              </select>
+            </div>
+          </div>
+          <div class="sku-form-row">
+            <div class="sku-field full">
+              <label>컬러 옵션</label>
+              <input type="text" placeholder="예: 블랙, 실버, 로즈골드" />
+            </div>
+          </div>
+          <div class="sku-form-row">
+            <div class="sku-field full">
+              <label>호환 기종</label>
+              <textarea placeholder="예: 갤럭시 워치 8, 갤럭시 워치 울트라"></textarea>
+            </div>
+          </div>
+          <div class="sku-form-row">
+            <div class="sku-field">
+              <label>가격 (원)</label>
+              <input type="number" placeholder="0" />
+            </div>
+            <div class="sku-field">
+              <label>상태</label>
+              <select>
+                <option value="active">Launched</option>
+                <option value="pipeline">In Pipeline</option>
+              </select>
+            </div>
+          </div>
+          <div class="sku-form-row">
+            <div class="sku-field full">
+              <label>이미지 업로드</label>
+              <div style="border:2px dashed var(--outline-variant);border-radius:6px;padding:24px;text-align:center;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor='var(--secondary)'" onmouseout="this.style.borderColor='var(--outline-variant)'">
+                <span class="material-symbols-outlined" style="font-size:32px;color:var(--on-surface-variant);opacity:0.3;display:block;margin-bottom:8px">cloud_upload</span>
+                <span style="font-size:13px;color:var(--on-surface-variant);opacity:0.5">클릭하여 이미지를 업로드하세요</span>
+              </div>
+            </div>
+          </div>
+          <div class="sku-actions">
+            <button class="sku-btn-cancel" id="skuCancel">Cancel</button>
+            <button class="sku-btn-save">Save SKU</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -783,6 +950,7 @@
           `Showing ${paged.length ? start + 1 : 0}–${start + paged.length} of ${filtered.length}`;
 
         renderGrid(paged);
+        renderTable(paged);
         renderActiveFilters();
         renderCatList();
         syncCheckboxes();
@@ -847,9 +1015,7 @@
         const categories = Object.keys(counts);
         catList.innerHTML = categories.map((cat) => {
           const active = state.category === cat;
-          const icon = CAT_ICONS[cat] || "label";
           return `<div class="sb-nav-item ${active ? "active" : ""}" data-cat="${cat}">
-    <span class="material-symbols-outlined">${icon}</span>
     <span>${cat}</span>
     <span class="sb-count">${counts[cat]}</span>
   </div>`;
@@ -901,6 +1067,60 @@
         el.querySelectorAll(".filter-chip").forEach((el, i) => { el.addEventListener("click", chips[i].remove); });
       }
 
+      /* ====== View Toggle ====== */
+      let currentView = 'grid'; // 'grid' or 'list'
+
+      function setView(view) {
+        currentView = view;
+        const grid = document.getElementById("productGrid");
+        const table = document.getElementById("productTable");
+        const btns = document.querySelectorAll(".view-toggle button");
+        if (view === 'grid') {
+          grid.style.display = '';
+          table.style.display = 'none';
+          btns[0].classList.add('vt-active');
+          btns[1].classList.remove('vt-active');
+        } else {
+          grid.style.display = 'none';
+          table.style.display = '';
+          btns[1].classList.add('vt-active');
+          btns[0].classList.remove('vt-active');
+        }
+        render();
+      }
+
+      function renderTable(products) {
+        const tbody = document.getElementById("productTableBody");
+        if (!products.length) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:60px;color:var(--on-surface-variant);opacity:0.4">검색 결과가 없습니다</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = products.map((p, i) => {
+          const col = CAT_COLORS[p.category] || { bg: "#f0f0ee", text: "#5c5c58" };
+          const imgEl = p.image_url
+            ? `<img class="table-img" src="${p.image_url}" alt="" loading="lazy" onerror="this.outerHTML='<div class=table-img-placeholder><span class=material-symbols-outlined>image</span></div>'">`
+            : `<div class="table-img-placeholder"><span class="material-symbols-outlined">image</span></div>`;
+          const statusBadge = p.status === "active"
+            ? '<span style="color:#166534;background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600">Launched</span>'
+            : '<span style="color:#e8734a;background:rgba(232,115,74,0.1);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600">Pipeline</span>';
+          const colorsCount = p.colors ? p.colors.split(",").length : "-";
+          return `<tr data-idx="${i}">
+            <td>${imgEl}</td>
+            <td class="table-name">${p.name}</td>
+            <td><span style="background:${col.bg};color:${col.text};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">${p.category}</span></td>
+            <td>${p.material || '-'}</td>
+            <td>${p.fastening || '-'}</td>
+            <td style="font-family:'DM Mono',monospace;font-size:12px">${p.size || '-'}</td>
+            <td style="font-family:'DM Mono',monospace;font-size:12px">${colorsCount}</td>
+            <td>${statusBadge}</td>
+          </tr>`;
+        }).join("");
+        tbody.querySelectorAll("tr").forEach(tr => {
+          tr.addEventListener("click", () => openModal(parseInt(tr.dataset.idx)));
+        });
+      }
+
+      /* ====== Product Detail Modal (Enhanced) ====== */
       function openModal(idx) {
         const filtered = applyFilters();
         const start = currentPage * PAGE_SIZE;
@@ -910,19 +1130,27 @@
         const col = CAT_COLORS[p.category] || { bg: "#f0f0ee", text: "#5c5c58" };
         document.getElementById("modalTitle").textContent = p.name;
 
+        // Image
+        const imgHtml = p.image_url
+          ? `<img class="modal-img" src="${p.image_url}" alt="${p.name}" onerror="this.outerHTML='<div class=modal-img-placeholder><span class=material-symbols-outlined>image</span></div>'">`
+          : `<div class="modal-img-placeholder"><span class="material-symbols-outlined">image</span></div>`;
+
+        // Tags row
+        const tags = [
+          `<span class="modal-tag" style="background:${col.bg};color:${col.text};font-weight:600">${p.category}</span>`,
+          p.material ? `<span class="modal-tag">${p.material}</span>` : '',
+          p.fastening ? `<span class="modal-tag">${p.fastening}</span>` : '',
+          p.size ? `<span class="modal-tag" style="font-family:'DM Mono',monospace">${p.size}</span>` : '',
+          p.status === "active"
+            ? '<span class="modal-tag" style="background:#dcfce7;color:#166534;font-weight:600">Launched</span>'
+            : '<span class="modal-tag" style="background:rgba(232,115,74,0.1);color:#e8734a;font-weight:600">In Pipeline</span>',
+        ].filter(Boolean).join('');
+
         const rows = [
-          ["카테고리", `<span style="background:${col.bg};color:${col.text};font-size:12px;padding:3px 8px;border-radius:4px;font-weight:600">${p.category}</span>`],
-          p.material && ["재질", p.material],
-          p.fastening && ["체결방식", p.fastening],
-          p.size && ["사이즈", `<span style="font-family:'DM Mono',monospace">${p.size}</span>`],
           p.type && p.type !== p.material && ["구분/형태", p.type],
           p.colors && ["컬러 옵션", p.colors],
           p.compatible_models && ["호환 기종", p.compatible_models],
-          p.status && ["상태",
-            p.status === "active"
-              ? '<span style="color:#166534;background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">Launched</span>'
-              : '<span style="color:#e8734a;background:rgba(232,115,74,0.1);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">In Pipeline</span>'
-          ],
+          p.connector && ["커넥터", p.connector],
         ].filter(Boolean);
 
         const links = [
@@ -938,9 +1166,11 @@
           : "";
 
         document.getElementById("modalBody").innerHTML = `
-  <div class="detail-grid">
+  ${imgHtml}
+  <div class="modal-tags">${tags}</div>
+  ${rows.length ? `<div class="detail-grid">
     ${rows.map(([k, v]) => `<div class="detail-key">${k}</div><div class="detail-val">${v}</div>`).join("")}
-  </div>
+  </div>` : ""}
   ${links.length ? `<div class="modal-divider"></div><div class="detail-grid">
     ${links.map(([k, url, plain]) => `<div class="detail-key">${k}</div><div class="detail-val">${url ? `<a href="${url}" target="_blank" rel="noopener">${url}</a>` : plain || ""}</div>`).join("")}
   </div>` : ""}
@@ -951,6 +1181,14 @@
 
       function closeModal() {
         document.getElementById("modalOverlay").classList.remove("open");
+      }
+
+      /* ====== Add New SKU Modal ====== */
+      function openSkuModal() {
+        document.getElementById("skuModalOverlay").classList.add("open");
+      }
+      function closeSkuModal() {
+        document.getElementById("skuModalOverlay").classList.remove("open");
       }
 
       async function init() {
@@ -1038,7 +1276,28 @@
         // Modal
         document.getElementById("modalClose").addEventListener("click", closeModal);
         document.getElementById("modalOverlay").addEventListener("click", (e) => { if (e.target === e.currentTarget) closeModal(); });
-        document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+
+        // View toggle
+        const vtBtns = document.querySelectorAll(".view-toggle button");
+        vtBtns[0].addEventListener("click", () => setView('grid'));
+        vtBtns[1].addEventListener("click", () => setView('list'));
+
+        // Add New SKU modal
+        document.querySelector(".sb-add-btn").addEventListener("click", openSkuModal);
+        document.getElementById("fabBtn").addEventListener("click", openSkuModal);
+        document.getElementById("skuModalClose").addEventListener("click", closeSkuModal);
+        document.getElementById("skuCancel").addEventListener("click", closeSkuModal);
+        document.getElementById("skuModalOverlay").addEventListener("click", (e) => { if (e.target === e.currentTarget) closeSkuModal(); });
+
+        // Populate SKU form dropdowns
+        const skuCat = document.getElementById("skuCategory");
+        Object.keys(counts).forEach(cat => { const o = document.createElement("option"); o.value = cat; o.textContent = cat; skuCat.appendChild(o); });
+        const skuMat = document.getElementById("skuMaterial");
+        data.stats.materials.filter(m => m && m !== "-").forEach(m => { const o = document.createElement("option"); o.value = m; o.textContent = m; skuMat.appendChild(o); });
+        const skuFas = document.getElementById("skuFastening");
+        data.stats.fastenings.filter(f => f && f !== "-").forEach(f => { const o = document.createElement("option"); o.value = f; o.textContent = f; skuFas.appendChild(o); });
+
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeModal(); closeSkuModal(); } });
         window.addEventListener("popstate", () => { loadState(); render(); });
 
         render();
