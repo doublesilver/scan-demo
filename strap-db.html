@@ -3,33 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>STRP-DB | 스트랩 통합 DB</title>
+    <title>STRP-DB | Strategic Architect Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&family=DM+Mono&family=Noto+Sans+KR:wght@400;500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&family=Work+Sans:wght@400;500&family=DM+Mono&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
       rel="stylesheet"
     />
     <style>
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
       :root {
-        /* Primary Palette */
         --primary: #040d1b;
         --primary-container: #1a2332;
         --on-primary: #ffffff;
-
-        /* Secondary / Accent */
         --secondary: #e8734a;
-        --secondary-hover: #d4623b;
-
-        /* Surface Hierarchy (Tonal Layering) */
+        --secondary-dim: #a23f1a;
         --background: #f9f9f7;
         --surface: #f9f9f7;
         --surface-container-low: #f4f4f2;
@@ -37,917 +30,648 @@
         --surface-container-high: #e8e8e6;
         --surface-container-highest: #e2e3e1;
         --surface-container-lowest: #ffffff;
-        --surface-bright: #f9f9f7;
-
-        /* Text */
         --on-surface: #1a1c1b;
         --on-surface-variant: #45474c;
         --outline: #75777d;
         --outline-variant: #c5c6cc;
-
-        /* Legacy mapping */
-        --navy: #1a2332;
-        --navy-light: #243044;
-        --navy-muted: #2d3f55;
-        --orange: #e8734a;
         --sidebar-w: 240px;
       }
 
       body {
-        font-family: "Inter", "Noto Sans KR", sans-serif;
+        font-family: 'Inter', 'Noto Sans KR', sans-serif;
         background: var(--background);
         color: var(--on-surface);
         min-height: 100vh;
         -webkit-font-smoothing: antialiased;
       }
 
-      /* LAYOUT */
-      .layout {
-        display: flex;
-        min-height: 100vh;
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
       }
 
       /* ==========================================
-         SIDEBAR — "The Monolith" (Stitch Design)
+         SIDEBAR — The Monolith (Stitch 1:1)
          ========================================== */
       .sidebar {
+        position: fixed;
+        left: 0; top: 0;
         width: var(--sidebar-w);
-        min-width: var(--sidebar-w);
+        height: 100vh;
+        z-index: 40;
         background: var(--primary-container);
-        color: var(--on-primary);
+        color: white;
+        font-size: 13px;
+        letter-spacing: 0.02em;
         display: flex;
         flex-direction: column;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        overflow-y: auto;
-        z-index: 40;
-        box-shadow: 8px 0 30px rgba(26, 35, 50, 0.15);
-        scrollbar-width: thin;
-        scrollbar-color: rgba(255,255,255,0.1) transparent;
+        box-shadow: 8px 0 30px rgba(26, 35, 50, 0.2);
       }
 
-      .sidebar::-webkit-scrollbar { width: 4px; }
-      .sidebar::-webkit-scrollbar-track { background: transparent; }
-      .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+      .sidebar-scroll { flex: 1; overflow-y: auto; }
+      .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+      .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+      .sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
-      .sidebar-logo {
-        padding: 24px 20px 20px;
-      }
+      /* Logo */
+      .sb-top { padding: 24px 24px 16px; }
+      .sb-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+      .sb-logo-icon { width: 32px; height: 32px; background: var(--secondary); display: flex; align-items: center; justify-content: center; border-radius: 4px; flex-shrink: 0; }
+      .sb-logo-icon .material-symbols-outlined { font-size: 20px; color: white; }
+      .sb-logo h1 { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: 0.12em; color: white; line-height: 1; }
+      .sb-logo-sub { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 2px; }
 
-      .sidebar-logo .logo-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 4px;
-      }
-
-      .logo-icon {
-        width: 32px;
-        height: 32px;
-        background: var(--secondary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 4px;
-        flex-shrink: 0;
-      }
-
-      .logo-icon .material-symbols-outlined {
-        font-size: 20px;
+      /* Add New SKU Button */
+      .sb-add-btn {
+        width: 100%;
+        background: linear-gradient(135deg, var(--primary), var(--primary-container));
+        border: 1px solid rgba(255,255,255,0.1);
         color: white;
-      }
-
-      .sidebar-logo h1 {
-        font-family: "Manrope", sans-serif;
-        font-size: 18px;
-        font-weight: 800;
-        color: var(--on-primary);
-        letter-spacing: 0.12em;
-        line-height: 1;
-      }
-
-      .sidebar-logo .logo-sub {
-        font-size: 10px;
-        color: rgba(255,255,255,0.35);
-        text-transform: uppercase;
-        letter-spacing: 0.2em;
-        font-weight: 500;
-        margin-top: 2px;
-      }
-
-      .total-badge {
-        display: inline-block;
-        font-family: "DM Mono", monospace;
-        background: rgba(255,255,255,0.08);
-        color: rgba(255,255,255,0.7);
-        font-size: 11px;
-        font-weight: 400;
-        padding: 4px 10px;
-        border-radius: 20px;
-        margin-top: 12px;
-      }
-
-      .sidebar-section {
-        padding: 12px 0 4px;
-      }
-
-      .sidebar-section-label {
-        font-size: 10px;
-        font-weight: 700;
-        color: rgba(255,255,255,0.25);
-        text-transform: uppercase;
-        letter-spacing: 0.18em;
-        padding: 0 20px 8px;
-      }
-
-      .cat-item {
+        padding: 12px 16px;
+        border-radius: 4px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 8px 20px;
         cursor: pointer;
-        border-radius: 0;
-        transition: all 0.15s;
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.55);
-        position: relative;
-      }
-
-      .cat-item:hover {
-        color: rgba(255, 255, 255, 0.9);
-        background: rgba(255, 255, 255, 0.04);
-      }
-
-      /* Active state: Orange pill on left edge */
-      .cat-item.active {
-        color: var(--on-primary);
+        font-size: 14px;
         font-weight: 500;
-        background: rgba(255, 255, 255, 0.05);
+        font-family: inherit;
+        transition: all 0.15s;
+        margin-bottom: 32px;
       }
+      .sb-add-btn:hover { background: rgba(255,255,255,0.05); }
+      .sb-add-btn .material-symbols-outlined { color: var(--secondary); transition: transform 0.2s; }
+      .sb-add-btn:hover .material-symbols-outlined { transform: rotate(90deg); }
 
-      .cat-item.active::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 4px;
-        height: 20px;
-        background: var(--secondary);
-        border-radius: 0 4px 4px 0;
-      }
+      /* Nav items */
+      .sb-nav { padding: 0 8px; display: flex; flex-direction: column; gap: 2px; }
+      .sb-section-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.15em; padding: 16px 16px 8px; }
 
-      .cat-count {
-        font-size: 10px;
-        font-family: "DM Mono", monospace;
-        color: rgba(255,255,255,0.3);
-      }
-
-      .cat-item.active .cat-count {
-        color: rgba(255,255,255,0.6);
-      }
-
-      .sidebar-divider {
-        height: 1px;
-        background: rgba(255,255,255,0.06);
-        margin: 8px 20px;
-      }
-
-      .filter-group {
-        padding: 4px 20px 8px;
-      }
-
-      .filter-group label {
+      .sb-nav-item {
         display: flex;
         align-items: center;
-        gap: 8px;
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.55);
+        padding: 8px 16px;
+        color: rgba(255,255,255,0.55);
         cursor: pointer;
-        padding: 4px 0;
-        transition: color 0.15s;
+        transition: all 0.15s;
+        border-radius: 0;
+        position: relative;
+        text-decoration: none;
+        font-size: 13px;
+      }
+      .sb-nav-item:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.04); }
+      .sb-nav-item .material-symbols-outlined { margin-right: 12px; font-size: 18px; }
+      .sb-nav-item .sb-count { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.3); }
+
+      /* Active state — orange pill */
+      .sb-nav-item.active {
+        color: white;
+        font-weight: 500;
+        background: rgba(255,255,255,0.05);
+      }
+      .sb-nav-item.active::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 50%;
+        transform: translateY(-50%);
+        width: 4px; height: 24px;
+        background: var(--secondary);
+        border-radius: 0 999px 999px 0;
+      }
+      .sb-nav-item.active .material-symbols-outlined { color: var(--secondary); }
+      .sb-nav-item.active .sb-count { background: rgba(255,255,255,0.1); padding: 1px 8px; border-radius: 999px; color: rgba(255,255,255,0.7); }
+
+      /* Status icon colors */
+      .sb-nav-item .icon-green { color: #4ade80; }
+      .sb-nav-item .icon-yellow { color: #facc15; }
+
+      /* Sidebar filter checkboxes */
+      .sb-filter-group { padding: 4px 24px 8px; }
+      .sb-filter-group label {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 12px; color: rgba(255,255,255,0.55);
+        cursor: pointer; padding: 4px 0; transition: color 0.15s;
+      }
+      .sb-filter-group label:hover { color: rgba(255,255,255,0.9); }
+      .sb-filter-group input[type="checkbox"] { accent-color: var(--secondary); width: 13px; height: 13px; flex-shrink: 0; }
+
+      /* Sidebar bottom */
+      .sb-bottom {
+        padding: 12px 8px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
       }
 
-      .filter-group label:hover {
-        color: rgba(255, 255, 255, 0.9);
-      }
-
-      .filter-group input[type="checkbox"] {
-        accent-color: var(--secondary);
-        width: 13px;
-        height: 13px;
-        flex-shrink: 0;
-      }
-
-      .reset-btn {
-        margin: 8px 20px 20px;
-        padding: 10px 12px;
+      /* Reset button */
+      .sb-reset {
+        margin: 8px 24px 16px;
+        padding: 10px;
         background: linear-gradient(135deg, var(--primary), var(--primary-container));
         border: 1px solid rgba(255,255,255,0.08);
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(255,255,255,0.45);
         border-radius: 4px;
         font-size: 12px;
         cursor: pointer;
-        width: calc(100% - 40px);
+        font-family: inherit;
         transition: all 0.15s;
-        font-family: "Inter", "Noto Sans KR", sans-serif;
       }
-
-      .reset-btn:hover {
-        border-color: var(--secondary);
-        color: var(--secondary);
-      }
+      .sb-reset:hover { border-color: var(--secondary); color: var(--secondary); }
 
       /* ==========================================
          MAIN CONTENT
          ========================================== */
-      .main {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
+      .main-wrap {
         margin-left: var(--sidebar-w);
+        min-height: 100vh;
       }
 
-      /* HEADER — Glassmorphism (Stitch) */
-      .header {
-        position: sticky;
+      /* TopAppBar — Glassmorphism */
+      .topbar {
+        position: fixed;
         top: 0;
-        z-index: 30;
-        background: rgba(249, 249, 247, 0.82);
+        left: var(--sidebar-w);
+        right: 0;
+        z-index: 50;
+        height: 64px;
+        background: rgba(249, 249, 247, 0.8);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        padding: 20px 32px 16px;
-        border-bottom: 1px solid rgba(26, 28, 27, 0.06);
+        border-bottom: 1px solid rgba(26, 28, 27, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
       }
 
-      /* Stats Row — Strategic Overview Cards */
+      .topbar-left { display: flex; align-items: center; gap: 24px; flex: 1; }
+
+      .topbar-search {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+      }
+      .topbar-search .material-symbols-outlined {
+        position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+        color: var(--on-surface-variant); opacity: 0.4; font-size: 20px;
+      }
+      #searchInput {
+        width: 100%;
+        background: var(--surface-container-low);
+        border: none;
+        border-radius: 4px;
+        padding: 8px 14px 8px 40px;
+        font-size: 14px;
+        font-family: 'DM Mono', monospace;
+        color: var(--on-surface);
+        outline: none;
+        transition: all 0.15s;
+      }
+      #searchInput::placeholder { color: var(--on-surface-variant); opacity: 0.35; font-family: 'Inter', sans-serif; }
+      #searchInput:focus { background: var(--surface-container-lowest); box-shadow: 0 0 0 1px var(--secondary); }
+
+      .topbar-right { display: flex; align-items: center; gap: 16px; }
+
+      .view-toggle {
+        display: flex;
+        border: 1px solid rgba(197,198,204,0.3);
+        border-radius: 4px;
+        overflow: hidden;
+        background: var(--surface-container-lowest);
+      }
+      .view-toggle button {
+        padding: 6px; border: none; cursor: pointer;
+        background: transparent; color: var(--on-surface-variant);
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.15s; font-size: 0;
+      }
+      .view-toggle button.vt-active { background: var(--surface-container-high); color: var(--primary); }
+      .view-toggle button:hover:not(.vt-active) { background: var(--surface-container-low); }
+      .view-toggle button .material-symbols-outlined { font-size: 18px; }
+
+      .topbar-divider { width: 1px; height: 32px; background: rgba(197,198,204,0.3); margin: 0 8px; }
+
+      .topbar-icon {
+        padding: 6px; border: none; background: transparent;
+        cursor: pointer; border-radius: 4px; color: var(--on-surface-variant);
+        display: flex; align-items: center; justify-content: center;
+        transition: background 0.15s;
+      }
+      .topbar-icon:hover { background: var(--surface-container-low); }
+      .topbar-icon .material-symbols-outlined { font-size: 20px; }
+
+      .topbar-avatar {
+        width: 32px; height: 32px; border-radius: 50%;
+        background: var(--primary-container); color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: 700; font-family: 'Manrope', sans-serif;
+        cursor: pointer; margin-left: 16px;
+      }
+
+      /* Main Content Area */
+      .content { padding: 88px 32px 48px; }
+
+      /* Strategic Overview Cards (Stats) */
       .stats-row {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin-bottom: 16px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        margin-bottom: 40px;
       }
 
       .stat-card {
         background: var(--surface-container-low);
-        border-radius: 6px;
-        padding: 16px 20px;
+        padding: 24px;
+        border-radius: 4px;
         position: relative;
         overflow: hidden;
-        transition: background 0.15s;
       }
-
-      .stat-card:hover {
-        background: var(--surface-container);
-      }
+      .stat-card.accent-green { border-left: 4px solid rgba(34,197,94,0.2); }
+      .stat-card.accent-orange { border-left: 4px solid rgba(232,115,74,0.2); }
+      .stat-card.accent-primary { border-left: 4px solid rgba(4,13,27,0.2); }
 
       .stat-label {
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--on-surface-variant);
-        opacity: 0.5;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
+        font-size: 10px; font-weight: 700;
+        color: var(--on-surface-variant); opacity: 0.5;
+        text-transform: uppercase; letter-spacing: 0.12em;
         margin-bottom: 4px;
       }
-
       .stat-value {
-        font-size: 28px;
-        font-weight: 800;
-        color: var(--primary);
-        font-family: "Manrope", sans-serif;
-        line-height: 1.2;
+        font-size: 30px; font-weight: 800;
+        font-family: 'Manrope', sans-serif;
+        color: var(--primary); line-height: 1.2;
       }
-
-      .stat-value span {
-        font-size: 13px;
-        font-weight: 400;
-        color: var(--on-surface-variant);
-        opacity: 0.4;
-        font-family: "Inter", sans-serif;
+      .stat-value.green { color: #15803d; }
+      .stat-value.orange { color: var(--secondary); }
+      .stat-value span { font-size: 13px; font-weight: 400; color: var(--on-surface-variant); opacity: 0.4; font-family: 'Inter', sans-serif; }
+      .stat-sub { font-size: 11px; color: #16a34a; font-weight: 500; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+      .stat-sub.muted { color: var(--on-surface-variant); opacity: 0.35; font-style: italic; }
+      .stat-bg-icon {
+        position: absolute; right: -16px; bottom: -16px;
+        opacity: 0.04; transition: opacity 0.2s;
       }
+      .stat-card:hover .stat-bg-icon { opacity: 0.08; }
+      .stat-bg-icon .material-symbols-outlined { font-size: 80px; font-variation-settings: 'FILL' 1; }
+      .stat-dots { display: flex; gap: 4px; margin-top: 12px; }
+      .stat-dots span { width: 8px; height: 8px; border-radius: 50%; }
 
-      /* Search — Ghost Input (Stitch) */
-      .search-wrap {
-        position: relative;
+      /* Content Header */
+      .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 24px;
       }
-
-      .search-icon {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--on-surface-variant);
-        opacity: 0.4;
-        pointer-events: none;
+      .content-header h2 {
+        font-size: 24px; font-weight: 700;
+        font-family: 'Manrope', 'Noto Sans KR', sans-serif;
+        letter-spacing: -0.02em; color: var(--primary);
       }
+      .content-header p {
+        font-size: 14px; color: var(--on-surface-variant); opacity: 0.5; margin-top: 4px;
+      }
+      .content-header-right { display: flex; align-items: center; gap: 12px; }
+      .showing-text { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--on-surface-variant); opacity: 0.35; }
 
-      #searchInput {
-        width: 100%;
-        padding: 10px 14px 10px 38px;
+      .page-arrow {
+        width: 32px; height: 32px; border-radius: 4px;
         background: var(--surface-container-low);
-        border: none;
-        border-bottom: 2px solid transparent;
-        border-radius: 6px;
-        color: var(--on-surface);
-        font-size: 14px;
-        outline: none;
-        transition: all 0.15s;
-        font-family: "Inter", "Noto Sans KR", sans-serif;
+        border: none; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--on-surface-variant); transition: background 0.15s;
       }
+      .page-arrow:hover { background: var(--surface-container-high); }
+      .page-arrow .material-symbols-outlined { font-size: 16px; }
 
-      #searchInput::placeholder {
-        color: var(--on-surface-variant);
-        opacity: 0.4;
-      }
-
-      #searchInput:focus {
-        border-bottom-color: var(--secondary);
-        background: var(--surface-container-lowest);
-        box-shadow: 0 4px 16px rgba(26, 28, 27, 0.04);
-      }
-
-      /* FILTER BAR — Tonal Layering */
+      /* Active Filters Bar */
       .filter-bar {
-        background: var(--surface-container-low);
-        padding: 10px 32px;
         display: flex;
         align-items: center;
         gap: 8px;
-        min-height: 46px;
+        margin-bottom: 20px;
+        min-height: 28px;
         flex-wrap: wrap;
       }
-
-      .filter-info {
-        font-size: 13px;
-        color: var(--on-surface-variant);
-        opacity: 0.6;
-      }
-
-      .filter-info strong {
-        color: var(--primary);
-        font-weight: 700;
-        font-family: "DM Mono", monospace;
-        opacity: 1;
-      }
-
-      .active-filters {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        flex: 1;
-      }
-
+      .filter-info { font-size: 13px; color: var(--on-surface-variant); opacity: 0.5; }
+      .filter-info strong { color: var(--primary); font-weight: 700; font-family: 'DM Mono', monospace; opacity: 1; }
+      .active-filters { display: flex; gap: 6px; flex-wrap: wrap; }
       .filter-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        background: var(--primary-container);
-        color: var(--on-primary);
-        font-size: 11px;
-        padding: 4px 10px 4px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background 0.15s;
+        display: inline-flex; align-items: center; gap: 4px;
+        background: var(--primary-container); color: white;
+        font-size: 11px; padding: 4px 10px 4px 12px;
+        border-radius: 4px; cursor: pointer; transition: background 0.15s;
       }
+      .filter-chip:hover { background: var(--secondary); }
+      .chip-x { font-size: 13px; line-height: 1; opacity: 0.6; }
 
-      .filter-chip:hover {
-        background: var(--secondary);
-      }
-
-      .chip-x {
-        font-size: 13px;
-        line-height: 1;
-        opacity: 0.6;
-      }
-
-      /* GRID */
-      .grid-wrap {
-        padding: 24px 32px 48px;
-        flex: 1;
-      }
-
+      /* Product Grid — 4 columns (Stitch) */
       .product-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+        gap: 24px;
       }
 
-      /* CARD — Tonal Layering + No borders */
-      .card {
-        background: var(--surface-container-lowest);
-        border-radius: 6px;
-        cursor: pointer;
-        border: none;
-        transition: all 0.2s;
-        position: relative;
-        overflow: hidden;
-      }
-
+      /* Card — Stitch Bento Style */
+      .card { cursor: pointer; }
       .card-img {
         aspect-ratio: 1;
         background: var(--surface-container-low);
+        border-radius: 4px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        position: relative;
-        overflow: hidden;
       }
-
-      .card-img .material-symbols-outlined {
-        font-size: 48px;
-        color: var(--on-surface-variant);
-        opacity: 0.12;
+      .card-img .img-placeholder {
+        font-size: 48px; color: var(--on-surface-variant); opacity: 0.12;
         transition: transform 0.4s;
       }
-
-      .card:hover .card-img .material-symbols-outlined {
-        transform: scale(1.1);
-      }
+      .card:hover .card-img .img-placeholder { transform: scale(1.1); }
 
       .card-img-overlay {
-        position: absolute;
-        inset: 0;
+        position: absolute; inset: 0;
         background: linear-gradient(to top, rgba(0,0,0,0.15), transparent);
-        opacity: 0;
-        transition: opacity 0.2s;
+        opacity: 0; transition: opacity 0.2s;
       }
+      .card:hover .card-img-overlay { opacity: 1; }
 
-      .card:hover .card-img-overlay {
-        opacity: 1;
-      }
-
-      .card-status {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 1;
-      }
-
+      .card-status { position: absolute; top: 12px; left: 12px; display: flex; flex-direction: column; gap: 4px; }
       .status-badge {
-        font-size: 9px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        padding: 3px 8px;
-        border-radius: 4px;
+        font-size: 9px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.06em; padding: 3px 8px; border-radius: 4px;
       }
+      .status-badge.launched { background: #dcfce7; color: #166534; }
+      .status-badge.pipeline { background: rgba(232,115,74,0.1); color: var(--secondary); }
+      .status-badge.archived { background: rgba(69,71,76,0.1); color: rgba(69,71,76,0.4); }
 
-      .status-badge.launched {
-        background: #dcfce7;
-        color: #166534;
+      .card-edit-btn {
+        position: absolute; bottom: 12px; right: 12px;
+        background: white; color: var(--primary);
+        width: 32px; height: 32px; border-radius: 50%;
+        border: none; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        opacity: 0; transition: opacity 0.2s;
       }
+      .card:hover .card-edit-btn { opacity: 1; }
+      .card-edit-btn .material-symbols-outlined { font-size: 16px; }
 
-      .status-badge.pipeline {
-        background: rgba(232, 115, 74, 0.1);
-        color: var(--secondary);
-      }
-
-      .status-badge.archived {
-        background: var(--surface-container);
-        color: var(--on-surface-variant);
-        opacity: 0.5;
-      }
-
-      .card-body {
-        padding: 14px 16px 16px;
-      }
-
-      .card-top {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 6px;
-        margin-bottom: 8px;
-      }
-
-      .cat-badge {
-        font-size: 10px;
-        font-weight: 600;
-        padding: 3px 8px;
-        border-radius: 4px;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-
-      .size-badge {
-        font-size: 10px;
-        font-weight: 600;
-        font-family: "DM Mono", monospace;
-        padding: 3px 7px;
-        border-radius: 4px;
-        background: var(--surface-container-high);
-        color: var(--on-surface-variant);
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-
+      .card-body {}
+      .card-name-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; gap: 4px; }
       .card-name {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--primary);
-        line-height: 1.4;
-        margin-bottom: 8px;
-        letter-spacing: -0.01em;
+        font-size: 14px; font-weight: 600; color: var(--primary);
+        letter-spacing: -0.01em; line-height: 1.3;
         transition: color 0.15s;
       }
+      .card:hover .card-name { color: var(--secondary); }
+      .card-sku { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--on-surface-variant); opacity: 0.4; white-space: nowrap; flex-shrink: 0; }
 
-      .card:hover .card-name {
-        color: var(--secondary);
-      }
-
-      .tag-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        margin-bottom: 4px;
-      }
-
-      .tag {
-        font-size: 11px;
-        padding: 2px 8px;
-        border-radius: 4px;
+      .card-tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; }
+      .card-tag {
+        font-size: 11px; color: var(--on-surface-variant); opacity: 0.5;
         background: var(--surface-container-high);
-        color: var(--on-surface-variant);
+        padding: 2px 6px; border-radius: 4px;
       }
+      .card-tag-colors { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--on-surface-variant); opacity: 0.6; }
 
-      .tag.material {
-        background: #e8f4fd;
-        color: #1a5276;
-      }
-      .tag.fastening {
-        background: #fef9e7;
-        color: #7d6608;
-      }
-
-      .colors-text {
-        font-size: 11px;
-        font-family: "DM Mono", monospace;
-        color: var(--on-surface-variant);
-        opacity: 0.5;
-        margin-top: 4px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      /* SKELETON */
+      /* Skeleton */
       .skeleton {
         background: linear-gradient(90deg, var(--surface-container-low) 25%, var(--surface-container-lowest) 50%, var(--surface-container-low) 75%);
         background-size: 200% 100%;
         animation: shimmer 1.4s infinite;
-        border-radius: 6px;
+        border-radius: 4px;
         height: 280px;
       }
+      @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-      @keyframes shimmer {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-      }
+      /* Empty State */
+      .empty-state { grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--on-surface-variant); opacity: 0.4; }
+      .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+      .empty-state p { font-size: 15px; }
 
-      /* EMPTY STATE */
-      .empty-state {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: 80px 20px;
-        color: var(--on-surface-variant);
-        opacity: 0.5;
+      /* FAB */
+      .fab {
+        position: fixed; bottom: 32px; right: 32px;
+        width: 56px; height: 56px;
+        background: var(--secondary); color: white;
+        border: none; border-radius: 50%; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 8px 24px rgba(232,115,74,0.3);
+        transition: transform 0.15s;
+        z-index: 30;
       }
+      .fab:hover { transform: scale(1.1); }
+      .fab .material-symbols-outlined { font-size: 24px; font-variation-settings: 'FILL' 1; }
 
-      .empty-state .icon {
-        font-size: 48px;
-        margin-bottom: 12px;
-      }
-      .empty-state p {
-        font-size: 15px;
-        font-family: "Inter", "Noto Sans KR", sans-serif;
-      }
-
-      /* MODAL — Ultra-diffused shadow (Stitch) */
+      /* MODAL */
       .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(26, 35, 50, 0.45);
+        position: fixed; inset: 0;
+        background: rgba(26,35,50,0.45);
         backdrop-filter: blur(4px);
         z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         padding: 20px;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s;
+        opacity: 0; pointer-events: none; transition: opacity 0.2s;
       }
-
-      .modal-overlay.open {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
+      .modal-overlay.open { opacity: 1; pointer-events: auto; }
       .modal {
         background: var(--surface-container-lowest);
-        border-radius: 12px;
-        width: 100%;
-        max-width: 520px;
-        max-height: 85vh;
-        overflow-y: auto;
-        transform: scale(0.95) translateY(10px);
-        transition: transform 0.2s;
-        box-shadow: 0 12px 40px rgba(26, 28, 27, 0.06);
+        border-radius: 12px; width: 100%; max-width: 520px;
+        max-height: 85vh; overflow-y: auto;
+        transform: scale(0.95) translateY(10px); transition: transform 0.2s;
+        box-shadow: 0 12px 40px rgba(26,28,27,0.06);
       }
-
-      .modal-overlay.open .modal {
-        transform: scale(1) translateY(0);
-      }
-
+      .modal-overlay.open .modal { transform: scale(1) translateY(0); }
       .modal-header {
         padding: 24px 24px 16px;
-        border-bottom: 1px solid var(--outline-variant);
-        border-bottom-color: rgba(197, 198, 204, 0.3);
-        position: sticky;
-        top: 0;
-        background: var(--surface-container-lowest);
-        z-index: 1;
+        border-bottom: 1px solid rgba(197,198,204,0.25);
+        position: sticky; top: 0; background: var(--surface-container-lowest); z-index: 1;
       }
-
       .modal-header h2 {
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--primary);
-        font-family: "Manrope", "Noto Sans KR", sans-serif;
-        line-height: 1.4;
-        padding-right: 32px;
+        font-size: 18px; font-weight: 700; color: var(--primary);
+        font-family: 'Manrope', 'Noto Sans KR', sans-serif;
+        line-height: 1.4; padding-right: 32px;
       }
-
       .modal-close {
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        background: var(--surface-container-low);
-        border: none;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--on-surface-variant);
-        transition: background 0.15s;
+        position: absolute; right: 20px; top: 20px;
+        background: var(--surface-container-low); border: none;
+        width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+        font-size: 16px; display: flex; align-items: center; justify-content: center;
+        color: var(--on-surface-variant); transition: background 0.15s;
       }
+      .modal-close:hover { background: var(--surface-container-high); }
+      .modal-body { padding: 20px 24px 24px; }
+      .detail-grid { display: grid; grid-template-columns: 100px 1fr; gap: 10px 12px; }
+      .detail-key { font-size: 12px; color: var(--on-surface-variant); opacity: 0.45; font-weight: 500; padding-top: 1px; }
+      .detail-val { font-size: 13px; color: var(--on-surface); word-break: break-all; }
+      .detail-val a { color: var(--secondary); text-decoration: none; }
+      .detail-val a:hover { opacity: 0.7; }
+      .modal-divider { height: 1px; background: var(--surface-container-high); margin: 14px 0; }
 
-      .modal-close:hover {
-        background: var(--surface-container-high);
-      }
-
-      .modal-body {
-        padding: 20px 24px 24px;
-      }
-
-      .detail-grid {
-        display: grid;
-        grid-template-columns: 100px 1fr;
-        gap: 10px 12px;
-      }
-
-      .detail-key {
-        font-size: 12px;
-        color: var(--on-surface-variant);
-        opacity: 0.5;
-        font-weight: 500;
-        padding-top: 1px;
-      }
-
-      .detail-val {
-        font-size: 13px;
-        color: var(--on-surface);
-        word-break: break-all;
-      }
-
-      .detail-val a {
-        color: var(--secondary);
-        text-decoration: none;
-        transition: opacity 0.15s;
-      }
-
-      .detail-val a:hover {
-        opacity: 0.7;
-      }
-
-      .modal-divider {
-        height: 1px;
-        background: var(--surface-container-high);
-        margin: 14px 0;
-      }
-
-      /* PAGINATION */
-      .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 4px;
-        margin-top: 40px;
-      }
-
-      .page-info {
-        font-size: 12px;
-        font-family: "DM Mono", monospace;
-        color: var(--on-surface-variant);
-        opacity: 0.4;
-        margin-bottom: 16px;
-        text-align: right;
-      }
-
-      /* MOBILE FILTER DROPDOWNS */
+      /* MOBILE */
       .mobile-filters {
-        display: none;
-        background: var(--primary-container);
-        padding: 12px 16px;
-        gap: 8px;
-        flex-wrap: wrap;
+        display: none; background: var(--primary-container);
+        padding: 12px 16px; gap: 8px; flex-wrap: wrap;
       }
-
       .mobile-select {
-        padding: 7px 10px;
-        background: var(--navy-light);
-        border: 1px solid var(--navy-muted);
-        border-radius: 4px;
-        color: var(--on-primary);
-        font-size: 13px;
-        outline: none;
-        cursor: pointer;
-        font-family: "Inter", "Noto Sans KR", sans-serif;
+        padding: 7px 10px; background: rgba(36,48,68,1);
+        border: 1px solid rgba(45,63,85,1); border-radius: 4px;
+        color: white; font-size: 13px; outline: none; cursor: pointer; font-family: inherit;
       }
 
-      /* RESPONSIVE */
-      @media (max-width: 1280px) {
-        .product-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
-
-      @media (max-width: 1024px) {
-        .product-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
+      @media (max-width: 1280px) { .product-grid, .stats-row { grid-template-columns: repeat(3, 1fr); } }
+      @media (max-width: 1024px) { .product-grid { grid-template-columns: repeat(2, 1fr); } .stats-row { grid-template-columns: repeat(2, 1fr); } }
       @media (max-width: 768px) {
-        .sidebar {
-          display: none;
-        }
-        .main {
-          margin-left: 0;
-        }
-        .mobile-filters {
-          display: flex;
-        }
-        .product-grid {
-          grid-template-columns: 1fr;
-        }
-        .header {
-          padding: 16px;
-        }
-        .grid-wrap {
-          padding: 16px;
-        }
-        .stats-row {
-          gap: 10px;
-        }
-        .stat-value {
-          font-size: 22px;
-        }
-        .filter-bar {
-          padding: 8px 16px;
-        }
+        .sidebar { display: none; }
+        .main-wrap { margin-left: 0; }
+        .topbar { left: 0; }
+        .mobile-filters { display: flex; }
+        .product-grid { grid-template-columns: 1fr; }
+        .stats-row { grid-template-columns: 1fr 1fr; }
+        .content { padding: 80px 16px 32px; }
+        .topbar { padding: 0 16px; }
+        .topbar-right .view-toggle, .topbar-right .topbar-divider, .topbar-right .topbar-icon { display: none; }
       }
 
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(8px); }
-        to { opacity: 1; transform: none; }
-      }
+      @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
     </style>
   </head>
   <body>
-    <div class="layout">
-      <!-- SIDEBAR — The Monolith -->
-      <aside class="sidebar" id="sidebar">
-        <div class="sidebar-logo">
-          <div class="logo-row">
-            <div class="logo-icon">
-              <span class="material-symbols-outlined">inventory_2</span>
-            </div>
-            <div>
-              <h1>STRP-DB</h1>
-              <div class="logo-sub">Strategic Architect</div>
-            </div>
+    <!-- ====== SIDEBAR ====== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-top">
+        <div class="sb-logo">
+          <div class="sb-logo-icon"><span class="material-symbols-outlined">inventory_2</span></div>
+          <div>
+            <h1>STRP-DB</h1>
+            <div class="sb-logo-sub">Strategic Architect</div>
           </div>
-          <div class="total-badge" id="totalBadge">loading...</div>
         </div>
+        <button class="sb-add-btn">
+          <span>Add New SKU</span>
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      </div>
 
-        <div class="sidebar-section">
-          <div class="sidebar-section-label">카테고리</div>
+      <nav class="sidebar-scroll">
+        <div class="sb-nav">
+          <!-- All Straps — active by default -->
+          <div class="sb-nav-item active" id="navAll" data-cat="">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <span>All Straps</span>
+            <span class="sb-count" id="totalBadge">-</span>
+          </div>
+
+          <div class="sb-section-label">Categories</div>
           <div id="catList"></div>
         </div>
 
-        <div class="sidebar-divider"></div>
+        <div class="sb-section-label" style="margin-top:8px">재질</div>
+        <div class="sb-filter-group" id="materialFilters"></div>
 
-        <div class="sidebar-section">
-          <div class="sidebar-section-label">재질</div>
-          <div class="filter-group" id="materialFilters"></div>
-        </div>
+        <div class="sb-section-label">체결방식</div>
+        <div class="sb-filter-group" id="fasteningFilters"></div>
 
-        <div class="sidebar-divider"></div>
+        <button class="sb-reset" id="resetBtn">필터 초기화</button>
+      </nav>
 
-        <div class="sidebar-section">
-          <div class="sidebar-section-label">체결방식</div>
-          <div class="filter-group" id="fasteningFilters"></div>
-        </div>
+      <div class="sb-bottom">
+        <div class="sb-nav-item"><span class="material-symbols-outlined">settings</span><span>Settings</span></div>
+        <div class="sb-nav-item"><span class="material-symbols-outlined">help_outline</span><span>Support</span></div>
+      </div>
+    </aside>
 
-        <div class="sidebar-divider"></div>
-
-        <button class="reset-btn" id="resetBtn">필터 초기화</button>
-      </aside>
-
-      <!-- MAIN -->
-      <div class="main">
-        <!-- MOBILE FILTERS -->
-        <div class="mobile-filters" id="mobileFilters">
-          <select class="mobile-select" id="mobileCat">
-            <option value="">전체 카테고리</option>
-          </select>
-          <select class="mobile-select" id="mobileMaterial">
-            <option value="">전체 재질</option>
-          </select>
-          <select class="mobile-select" id="mobileFastening">
-            <option value="">전체 체결방식</option>
-          </select>
-        </div>
-
-        <!-- HEADER — Glassmorphism -->
-        <div class="header">
-          <div class="stats-row">
-            <div class="stat-card">
-              <div class="stat-label">Total Assets</div>
-              <div class="stat-value" id="statTotal">-</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Categories</div>
-              <div class="stat-value" id="statCats">-</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Materials</div>
-              <div class="stat-value" id="statMaterials">-</div>
-            </div>
-          </div>
-          <div class="search-wrap">
-            <svg
-              class="search-icon"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="SKU, 제품명, 재질, 체결방식으로 검색..."
-            />
+    <!-- ====== MAIN ====== -->
+    <div class="main-wrap">
+      <!-- Top App Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-search">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" id="searchInput" placeholder="Search SKU, name, or material..." />
           </div>
         </div>
+        <div class="topbar-right">
+          <div class="view-toggle">
+            <button class="vt-active"><span class="material-symbols-outlined">grid_view</span></button>
+            <button><span class="material-symbols-outlined">list</span></button>
+          </div>
+          <div class="topbar-divider"></div>
+          <button class="topbar-icon"><span class="material-symbols-outlined">sort</span></button>
+          <button class="topbar-icon"><span class="material-symbols-outlined">notifications</span></button>
+          <div class="topbar-avatar">JD</div>
+        </div>
+      </header>
 
-        <!-- FILTER BAR -->
+      <!-- Mobile Filters -->
+      <div class="mobile-filters" id="mobileFilters">
+        <select class="mobile-select" id="mobileCat"><option value="">전체 카테고리</option></select>
+        <select class="mobile-select" id="mobileMaterial"><option value="">전체 재질</option></select>
+        <select class="mobile-select" id="mobileFastening"><option value="">전체 체결방식</option></select>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Total Assets</div>
+            <div class="stat-value" id="statTotal">-</div>
+            <div class="stat-bg-icon"><span class="material-symbols-outlined">inventory_2</span></div>
+          </div>
+          <div class="stat-card accent-green">
+            <div class="stat-label">Live Status</div>
+            <div class="stat-value green" id="statLive">-</div>
+            <div class="stat-sub" id="statLiveSub"></div>
+          </div>
+          <div class="stat-card accent-orange">
+            <div class="stat-label">In Pipeline</div>
+            <div class="stat-value orange" id="statPipeline">-</div>
+            <div class="stat-sub muted" id="statPipelineSub"></div>
+          </div>
+          <div class="stat-card accent-primary">
+            <div class="stat-label">Active Materials</div>
+            <div class="stat-value" id="statMaterials">-</div>
+            <div class="stat-dots" id="statDots"></div>
+          </div>
+        </div>
+
+        <!-- Content Header -->
+        <div class="content-header">
+          <div>
+            <h2>All Product SKUs</h2>
+            <p>스트랩 인벤토리 관리 및 런칭 현황 추적</p>
+          </div>
+          <div class="content-header-right">
+            <span class="showing-text" id="showingText">-</span>
+            <div style="display:flex;gap:4px">
+              <button class="page-arrow" id="pagePrev"><span class="material-symbols-outlined">chevron_left</span></button>
+              <button class="page-arrow" id="pageNext"><span class="material-symbols-outlined">chevron_right</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
         <div class="filter-bar">
-          <div class="filter-info">
-            <strong id="resultCount">0</strong>개 제품
-          </div>
+          <div class="filter-info"><strong id="resultCount">0</strong>개 제품</div>
           <div class="active-filters" id="activeFilters"></div>
         </div>
 
-        <!-- GRID -->
-        <div class="grid-wrap">
-          <div class="product-grid" id="productGrid">
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-          </div>
+        <!-- Product Grid -->
+        <div class="product-grid" id="productGrid">
+          <div class="skeleton"></div><div class="skeleton"></div>
+          <div class="skeleton"></div><div class="skeleton"></div>
+          <div class="skeleton"></div><div class="skeleton"></div>
+          <div class="skeleton"></div><div class="skeleton"></div>
         </div>
       </div>
     </div>
+
+    <!-- FAB -->
+    <button class="fab"><span class="material-symbols-outlined">add</span></button>
 
     <!-- MODAL -->
     <div class="modal-overlay" id="modalOverlay">
@@ -961,30 +685,45 @@
     </div>
 
     <script>
+      /* ====== Icon mapping for categories ====== */
+      const CAT_ICONS = {
+        "20mm 일반형": "straighten",
+        "22mm 일반형": "straighten",
+        "18mm 일반형": "straighten",
+        "갤럭시 울트라": "workspace_premium",
+        "갤럭시 워치 8": "watch",
+        "애플워치": "watch",
+        "미밴드": "fitbit",
+        "미밴드10": "fitbit",
+        "화웨이 핏4": "watch",
+        "티렉스": "shield",
+        "프레스티지": "diamond",
+        "가민": "explore",
+        "보이스캐디": "sports_golf",
+        "커넥터": "link",
+      };
+
       const CAT_COLORS = {
         "20mm 일반형": { bg: "#e8f4fd", text: "#1a5276" },
         "22mm 일반형": { bg: "#e8f8f5", text: "#1a6e4e" },
         "18mm 일반형": { bg: "#fef5e7", text: "#7d5a0a" },
         "갤럭시 울트라": { bg: "#fdebd0", text: "#784212" },
         "갤럭시 워치 8": { bg: "#f9ebea", text: "#7b241c" },
-        애플워치: { bg: "#f4ecf7", text: "#6c3483" },
-        미밴드: { bg: "#eaf2ff", text: "#1a4a8a" },
-        미밴드10: { bg: "#d6eaf8", text: "#154360" },
+        "애플워치": { bg: "#f4ecf7", text: "#6c3483" },
+        "미밴드": { bg: "#eaf2ff", text: "#1a4a8a" },
+        "미밴드10": { bg: "#d6eaf8", text: "#154360" },
         "화웨이 핏4": { bg: "#e9f7ef", text: "#1d6a3a" },
-        티렉스: { bg: "#fdedec", text: "#7b241c" },
-        프레스티지: { bg: "#f5eef8", text: "#5b2c6f" },
-        가민: { bg: "#fdfefe", text: "#2e4057" },
-        보이스캐디: { bg: "#eafaf1", text: "#1e5631" },
-        커넥터: { bg: "#f2f3f4", text: "#424949" },
+        "티렉스": { bg: "#fdedec", text: "#7b241c" },
+        "프레스티지": { bg: "#f5eef8", text: "#5b2c6f" },
+        "가민": { bg: "#fdfefe", text: "#2e4057" },
+        "보이스캐디": { bg: "#eafaf1", text: "#1e5631" },
+        "커넥터": { bg: "#f2f3f4", text: "#424949" },
       };
 
       let allProducts = [];
-      let state = {
-        category: "",
-        materials: new Set(),
-        fastenings: new Set(),
-        search: "",
-      };
+      let currentPage = 0;
+      const PAGE_SIZE = 24;
+      let state = { category: "", materials: new Set(), fastenings: new Set(), search: "" };
 
       function loadState() {
         const hash = location.hash.slice(1);
@@ -993,12 +732,8 @@
           const p = new URLSearchParams(hash);
           state.category = p.get("cat") || "";
           state.search = p.get("q") || "";
-          state.materials = new Set(
-            (p.get("mat") || "").split(",").filter(Boolean),
-          );
-          state.fastenings = new Set(
-            (p.get("fas") || "").split(",").filter(Boolean),
-          );
+          state.materials = new Set((p.get("mat") || "").split(",").filter(Boolean));
+          state.fastenings = new Set((p.get("fas") || "").split(",").filter(Boolean));
         } catch {}
       }
 
@@ -1007,8 +742,7 @@
         if (state.category) p.set("cat", state.category);
         if (state.search) p.set("q", state.search);
         if (state.materials.size) p.set("mat", [...state.materials].join(","));
-        if (state.fastenings.size)
-          p.set("fas", [...state.fastenings].join(","));
+        if (state.fastenings.size) p.set("fas", [...state.fastenings].join(","));
         const s = p.toString();
         history.replaceState(null, "", s ? "#" + s : location.pathname);
       }
@@ -1017,22 +751,11 @@
         const q = state.search.toLowerCase();
         return allProducts.filter((p) => {
           if (state.category && p.category !== state.category) return false;
-          if (state.materials.size && !state.materials.has(p.material))
-            return false;
-          if (state.fastenings.size && !state.fastenings.has(p.fastening))
-            return false;
+          if (state.materials.size && !state.materials.has(p.material)) return false;
+          if (state.fastenings.size && !state.fastenings.has(p.fastening)) return false;
           if (q) {
-            const hay = [
-              p.name,
-              p.material,
-              p.fastening,
-              p.colors,
-              p.type,
-              p.compatible_models,
-            ]
-              .filter(Boolean)
-              .join(" ")
-              .toLowerCase();
+            const hay = [p.name, p.material, p.fastening, p.colors, p.type, p.compatible_models]
+              .filter(Boolean).join(" ").toLowerCase();
             if (!hay.includes(q)) return false;
           }
           return true;
@@ -1042,7 +765,17 @@
       function render() {
         const filtered = applyFilters();
         document.getElementById("resultCount").textContent = filtered.length;
-        renderGrid(filtered);
+
+        // Pagination
+        const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+        if (currentPage >= totalPages) currentPage = Math.max(0, totalPages - 1);
+        const start = currentPage * PAGE_SIZE;
+        const paged = filtered.slice(start, start + PAGE_SIZE);
+
+        document.getElementById("showingText").textContent =
+          `Showing ${paged.length ? start + 1 : 0}–${start + paged.length} of ${filtered.length}`;
+
+        renderGrid(paged);
         renderActiveFilters();
         renderCatList();
         syncCheckboxes();
@@ -1053,87 +786,67 @@
       function renderGrid(products) {
         const grid = document.getElementById("productGrid");
         if (!products.length) {
-          grid.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>검색 결과가 없습니다</p></div>`;
+          grid.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>검색 결과가 없습니다</p></div>';
           return;
         }
         grid.innerHTML = products.map((p, i) => cardHTML(p, i)).join("");
         grid.querySelectorAll(".card").forEach((card) => {
-          card.addEventListener("click", () =>
-            openModal(parseInt(card.dataset.idx)),
-          );
+          card.addEventListener("click", () => openModal(parseInt(card.dataset.idx)));
         });
       }
 
       function cardHTML(p, i) {
-        const col = CAT_COLORS[p.category] || {
-          bg: "#f0f0ee",
-          text: "#5c5c58",
-        };
-        const catBadge = `<span class="cat-badge" style="background:${col.bg};color:${col.text}">${p.category}</span>`;
-        const sizeBadge = p.size
-          ? `<span class="size-badge">${p.size}</span>`
-          : "";
-        const matTag = p.material
-          ? `<span class="tag material">${p.material}</span>`
-          : "";
-        const fasTag = p.fastening
-          ? `<span class="tag fastening">${p.fastening}</span>`
-          : "";
-        const typeTag =
-          p.type && p.type !== p.material
-            ? `<span class="tag">${p.type}</span>`
-            : "";
-        const colorsEl = p.colors
-          ? `<div class="colors-text">${p.colors}</div>`
-          : "";
-
-        // Determine status badge
+        const col = CAT_COLORS[p.category] || { bg: "#f0f0ee", text: "#5c5c58" };
         const statusClass = p.status === "active" ? "launched" : "pipeline";
         const statusLabel = p.status === "active" ? "Launched" : "In Pipeline";
+        const colorsCount = p.colors ? p.colors.split(",").length + " Colors" : "";
 
         return `<div class="card" data-idx="${i}" style="animation:fadeIn .25s ${(i % 12) * 0.03}s both">
-    <div class="card-img">
-      <span class="material-symbols-outlined">image</span>
-      <div class="card-img-overlay"></div>
-      <div class="card-status">
-        <span class="status-badge ${statusClass}">${statusLabel}</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-top">
-        ${catBadge}
-        ${sizeBadge}
-      </div>
+  <div class="card-img">
+    <span class="material-symbols-outlined img-placeholder">image</span>
+    <div class="card-img-overlay"></div>
+    <div class="card-status"><span class="status-badge ${statusClass}">${statusLabel}</span></div>
+    <button class="card-edit-btn" onclick="event.stopPropagation()"><span class="material-symbols-outlined">edit</span></button>
+  </div>
+  <div class="card-body">
+    <div class="card-name-row">
       <div class="card-name">${p.name}</div>
-      <div class="tag-row">${matTag}${fasTag}${typeTag}</div>
-      ${colorsEl}
+      ${p.size ? `<span class="card-sku">${p.size}</span>` : ''}
     </div>
-  </div>`;
+    <div class="card-tags">
+      <span class="card-tag" style="background:${col.bg};color:${col.text}">${p.category}</span>
+      ${p.material ? `<span class="card-tag">${p.material}</span>` : ''}
+      ${colorsCount ? `<span class="card-tag-colors">${colorsCount}</span>` : ''}
+    </div>
+  </div>
+</div>`;
       }
 
       function renderCatList() {
         const catList = document.getElementById("catList");
         const counts = {};
-        allProducts.forEach((p) => {
-          counts[p.category] = (counts[p.category] || 0) + 1;
-        });
+        allProducts.forEach((p) => { counts[p.category] = (counts[p.category] || 0) + 1; });
 
-        const categories = ["전체", ...Object.keys(counts)];
-        catList.innerHTML = categories
-          .map((cat) => {
-            const isAll = cat === "전체";
-            const active = isAll ? !state.category : state.category === cat;
-            const count = isAll ? allProducts.length : counts[cat] || 0;
-            return `<div class="cat-item ${active ? "active" : ""}" data-cat="${isAll ? "" : cat}">
-      <span>${cat}</span>
-      <span class="cat-count">${count}</span>
-    </div>`;
-          })
-          .join("");
+        // Update "All Straps" active state
+        const navAll = document.getElementById("navAll");
+        if (!state.category) navAll.classList.add("active");
+        else navAll.classList.remove("active");
 
-        catList.querySelectorAll(".cat-item").forEach((el) => {
+        const categories = Object.keys(counts);
+        catList.innerHTML = categories.map((cat) => {
+          const active = state.category === cat;
+          const icon = CAT_ICONS[cat] || "label";
+          return `<div class="sb-nav-item ${active ? "active" : ""}" data-cat="${cat}">
+    <span class="material-symbols-outlined">${icon}</span>
+    <span>${cat}</span>
+    <span class="sb-count">${counts[cat]}</span>
+  </div>`;
+        }).join("");
+
+        catList.querySelectorAll(".sb-nav-item").forEach((el) => {
           el.addEventListener("click", () => {
             state.category = el.dataset.cat;
+            currentPage = 0;
             render();
           });
         });
@@ -1143,109 +856,65 @@
         const el = document.getElementById(containerId);
         el.innerHTML = values
           .filter((v) => v && v !== "-")
-          .map(
-            (v) =>
-              `<label><input type="checkbox" value="${v}" ${stateSet.has(v) ? "checked" : ""}>${v}</label>`,
-          )
+          .map((v) => `<label><input type="checkbox" value="${v}" ${stateSet.has(v) ? "checked" : ""}>${v}</label>`)
           .join("");
         el.querySelectorAll("input").forEach((cb) => {
           cb.addEventListener("change", () => {
             if (cb.checked) stateSet.add(cb.value);
             else stateSet.delete(cb.value);
+            currentPage = 0;
             render();
           });
         });
       }
 
       function syncCheckboxes() {
-        document.querySelectorAll("#materialFilters input").forEach((cb) => {
-          cb.checked = state.materials.has(cb.value);
-        });
-        document.querySelectorAll("#fasteningFilters input").forEach((cb) => {
-          cb.checked = state.fastenings.has(cb.value);
-        });
+        document.querySelectorAll("#materialFilters input").forEach((cb) => { cb.checked = state.materials.has(cb.value); });
+        document.querySelectorAll("#fasteningFilters input").forEach((cb) => { cb.checked = state.fastenings.has(cb.value); });
       }
 
       function syncMobileSelects() {
         document.getElementById("mobileCat").value = state.category;
-        document.getElementById("mobileMaterial").value =
-          state.materials.size === 1 ? [...state.materials][0] : "";
-        document.getElementById("mobileFastening").value =
-          state.fastenings.size === 1 ? [...state.fastenings][0] : "";
+        document.getElementById("mobileMaterial").value = state.materials.size === 1 ? [...state.materials][0] : "";
+        document.getElementById("mobileFastening").value = state.fastenings.size === 1 ? [...state.fastenings][0] : "";
       }
 
       function renderActiveFilters() {
         const el = document.getElementById("activeFilters");
         const chips = [];
-        if (state.category)
-          chips.push({
-            label: state.category,
-            remove: () => {
-              state.category = "";
-              render();
-            },
-          });
-        state.materials.forEach((m) =>
-          chips.push({
-            label: `재질: ${m}`,
-            remove: () => {
-              state.materials.delete(m);
-              render();
-            },
-          }),
-        );
-        state.fastenings.forEach((f) =>
-          chips.push({
-            label: `체결: ${f}`,
-            remove: () => {
-              state.fastenings.delete(f);
-              render();
-            },
-          }),
-        );
-        el.innerHTML = chips
-          .map(
-            (c, i) =>
-              `<span class="filter-chip" data-i="${i}">${c.label}<span class="chip-x">×</span></span>`,
-          )
-          .join("");
-        el.querySelectorAll(".filter-chip").forEach((el, i) => {
-          el.addEventListener("click", chips[i].remove);
-        });
+        if (state.category) chips.push({ label: state.category, remove: () => { state.category = ""; currentPage = 0; render(); } });
+        state.materials.forEach((m) => chips.push({ label: `재질: ${m}`, remove: () => { state.materials.delete(m); currentPage = 0; render(); } }));
+        state.fastenings.forEach((f) => chips.push({ label: `체결: ${f}`, remove: () => { state.fastenings.delete(f); currentPage = 0; render(); } }));
+        el.innerHTML = chips.map((c, i) => `<span class="filter-chip" data-i="${i}">${c.label}<span class="chip-x">×</span></span>`).join("");
+        el.querySelectorAll(".filter-chip").forEach((el, i) => { el.addEventListener("click", chips[i].remove); });
       }
 
       function openModal(idx) {
-        const p = applyFilters()[idx];
+        const filtered = applyFilters();
+        const start = currentPage * PAGE_SIZE;
+        const p = filtered[start + idx];
         if (!p) return;
 
-        const col = CAT_COLORS[p.category] || {
-          bg: "#f0f0ee",
-          text: "#5c5c58",
-        };
+        const col = CAT_COLORS[p.category] || { bg: "#f0f0ee", text: "#5c5c58" };
         document.getElementById("modalTitle").textContent = p.name;
 
         const rows = [
-          [
-            "카테고리",
-            `<span class="cat-badge" style="background:${col.bg};color:${col.text};font-size:12px;padding:3px 8px;border-radius:6px">${p.category}</span>`,
-          ],
+          ["카테고리", `<span style="background:${col.bg};color:${col.text};font-size:12px;padding:3px 8px;border-radius:4px;font-weight:600">${p.category}</span>`],
           p.material && ["재질", p.material],
           p.fastening && ["체결방식", p.fastening],
           p.size && ["사이즈", `<span style="font-family:'DM Mono',monospace">${p.size}</span>`],
           p.type && p.type !== p.material && ["구분/형태", p.type],
           p.colors && ["컬러 옵션", p.colors],
           p.compatible_models && ["호환 기종", p.compatible_models],
-          p.status && [
-            "상태",
+          p.status && ["상태",
             p.status === "active"
               ? '<span style="color:#166534;background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">Launched</span>'
-              : '<span style="color:#e8734a;background:rgba(232,115,74,0.1);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">In Pipeline</span>',
+              : '<span style="color:#e8734a;background:rgba(232,115,74,0.1);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">In Pipeline</span>'
           ],
         ].filter(Boolean);
 
         const links = [
-          p.coupang_url &&
-            p.coupang_url.startsWith("http") && ["쿠팡", p.coupang_url],
+          p.coupang_url && p.coupang_url.startsWith("http") && ["쿠팡", p.coupang_url],
           p.ss_url && p.ss_url.startsWith("http") && ["스페이스쉴드", p.ss_url],
           p.url_1688 && p.url_1688.startsWith("http") && ["1688", p.url_1688],
           p.nas_path && p.nas_path !== "링크" && ["NAS 경로", null, p.nas_path],
@@ -1253,30 +922,17 @@
 
         const priceRow = p.price
           ? `<div class="modal-divider"></div>
-    <div style="font-size:22px;font-weight:800;color:var(--secondary);font-family:'Manrope',sans-serif">${parseInt(p.price).toLocaleString()}<span style="font-size:14px;font-weight:500;opacity:0.7">원</span></div>`
+  <div style="font-size:22px;font-weight:800;color:var(--secondary);font-family:'Manrope',sans-serif">${parseInt(p.price).toLocaleString()}<span style="font-size:14px;font-weight:500;opacity:0.6">원</span></div>`
           : "";
 
         document.getElementById("modalBody").innerHTML = `
-    <div class="detail-grid">
-      ${rows.map(([k, v]) => `<div class="detail-key">${k}</div><div class="detail-val">${v}</div>`).join("")}
-    </div>
-    ${
-      links.length
-        ? `<div class="modal-divider"></div>
-      <div class="detail-grid">
-        ${links
-          .map(
-            ([k, url, plain]) => `
-          <div class="detail-key">${k}</div>
-          <div class="detail-val">${url ? `<a href="${url}" target="_blank" rel="noopener">${url}</a>` : plain || ""}</div>
-        `,
-          )
-          .join("")}
-      </div>`
-        : ""
-    }
-    ${priceRow}
-  `;
+  <div class="detail-grid">
+    ${rows.map(([k, v]) => `<div class="detail-key">${k}</div><div class="detail-val">${v}</div>`).join("")}
+  </div>
+  ${links.length ? `<div class="modal-divider"></div><div class="detail-grid">
+    ${links.map(([k, url, plain]) => `<div class="detail-key">${k}</div><div class="detail-val">${url ? `<a href="${url}" target="_blank" rel="noopener">${url}</a>` : plain || ""}</div>`).join("")}
+  </div>` : ""}
+  ${priceRow}`;
 
         document.getElementById("modalOverlay").classList.add("open");
       }
@@ -1292,118 +948,86 @@
         const data = await resp.json();
         allProducts = data.products;
 
-        document.getElementById("totalBadge").textContent =
-          `${data.stats.total_products} products`;
-        document.getElementById("statTotal").innerHTML =
-          `${data.stats.total_products} <span>개</span>`;
-        document.getElementById("statCats").innerHTML =
-          `${data.stats.tabs} <span>개</span>`;
-        document.getElementById("statMaterials").innerHTML =
-          `${data.stats.materials.filter((m) => m !== "-").length} <span>종</span>`;
+        const total = data.stats.total_products;
+        const matCount = data.stats.materials.filter((m) => m !== "-").length;
+        const liveCount = allProducts.filter(p => p.status === "active").length;
+        const pipelineCount = total - liveCount;
+
+        // Stats
+        document.getElementById("totalBadge").textContent = total.toLocaleString();
+        document.getElementById("statTotal").innerHTML = `${total.toLocaleString()} <span>개</span>`;
+        document.getElementById("statLive").innerHTML = `${liveCount.toLocaleString()} <span>개</span>`;
+        document.getElementById("statLiveSub").innerHTML = `<span class="material-symbols-outlined" style="font-size:14px">trending_up</span> Active products`;
+        document.getElementById("statPipeline").innerHTML = `${pipelineCount.toLocaleString()} <span>개</span>`;
+        document.getElementById("statPipelineSub").textContent = "Pending launch";
+        document.getElementById("statMaterials").innerHTML = `${matCount} <span>종</span>`;
+
+        // Material dots
+        const dotColors = ["#822803", "#3e4758", "#464745"];
+        document.getElementById("statDots").innerHTML = dotColors.map(c => `<span style="background:${c}"></span>`).join("");
 
         const counts = {};
-        allProducts.forEach((p) => {
-          counts[p.category] = (counts[p.category] || 0) + 1;
+        allProducts.forEach((p) => { counts[p.category] = (counts[p.category] || 0) + 1; });
+
+        buildCheckboxes("materialFilters", data.stats.materials, state.materials);
+        buildCheckboxes("fasteningFilters", data.stats.fastenings, state.fastenings);
+
+        // "All Straps" click
+        document.getElementById("navAll").addEventListener("click", () => {
+          state.category = "";
+          currentPage = 0;
+          render();
         });
 
-        buildCheckboxes(
-          "materialFilters",
-          data.stats.materials,
-          state.materials,
-        );
-        buildCheckboxes(
-          "fasteningFilters",
-          data.stats.fastenings,
-          state.fastenings,
-        );
-
-        // mobile selects
+        // Mobile selects
         const mobileCat = document.getElementById("mobileCat");
         Object.keys(counts).forEach((cat) => {
           const o = document.createElement("option");
-          o.value = cat;
-          o.textContent = `${cat} (${counts[cat]})`;
+          o.value = cat; o.textContent = `${cat} (${counts[cat]})`;
           mobileCat.appendChild(o);
         });
         mobileCat.value = state.category;
 
         const mobileMat = document.getElementById("mobileMaterial");
-        data.stats.materials
-          .filter((m) => m && m !== "-")
-          .forEach((m) => {
-            const o = document.createElement("option");
-            o.value = m;
-            o.textContent = m;
-            mobileMat.appendChild(o);
-          });
+        data.stats.materials.filter((m) => m && m !== "-").forEach((m) => {
+          const o = document.createElement("option"); o.value = m; o.textContent = m;
+          mobileMat.appendChild(o);
+        });
 
         const mobileFas = document.getElementById("mobileFastening");
-        data.stats.fastenings
-          .filter((f) => f && f !== "-")
-          .forEach((f) => {
-            const o = document.createElement("option");
-            o.value = f;
-            o.textContent = f;
-            mobileFas.appendChild(o);
-          });
-
-        mobileCat.addEventListener("change", () => {
-          state.category = mobileCat.value;
-          render();
-        });
-        mobileMat.addEventListener("change", () => {
-          state.materials.clear();
-          if (mobileMat.value) state.materials.add(mobileMat.value);
-          render();
-        });
-        mobileFas.addEventListener("change", () => {
-          state.fastenings.clear();
-          if (mobileFas.value) state.fastenings.add(mobileFas.value);
-          render();
+        data.stats.fastenings.filter((f) => f && f !== "-").forEach((f) => {
+          const o = document.createElement("option"); o.value = f; o.textContent = f;
+          mobileFas.appendChild(o);
         });
 
-        document
-          .getElementById("searchInput")
-          .addEventListener("input", (e) => {
-            state.search = e.target.value;
-            render();
-          });
+        mobileCat.addEventListener("change", () => { state.category = mobileCat.value; currentPage = 0; render(); });
+        mobileMat.addEventListener("change", () => { state.materials.clear(); if (mobileMat.value) state.materials.add(mobileMat.value); currentPage = 0; render(); });
+        mobileFas.addEventListener("change", () => { state.fastenings.clear(); if (mobileFas.value) state.fastenings.add(mobileFas.value); currentPage = 0; render(); });
+
+        document.getElementById("searchInput").addEventListener("input", (e) => { state.search = e.target.value; currentPage = 0; render(); });
         document.getElementById("searchInput").value = state.search;
 
         document.getElementById("resetBtn").addEventListener("click", () => {
-          state.category = "";
-          state.materials.clear();
-          state.fastenings.clear();
-          state.search = "";
+          state.category = ""; state.materials.clear(); state.fastenings.clear(); state.search = "";
           document.getElementById("searchInput").value = "";
-          buildCheckboxes(
-            "materialFilters",
-            data.stats.materials,
-            state.materials,
-          );
-          buildCheckboxes(
-            "fasteningFilters",
-            data.stats.fastenings,
-            state.fastenings,
-          );
+          currentPage = 0;
+          buildCheckboxes("materialFilters", data.stats.materials, state.materials);
+          buildCheckboxes("fasteningFilters", data.stats.fastenings, state.fastenings);
           render();
         });
 
-        document
-          .getElementById("modalClose")
-          .addEventListener("click", closeModal);
-        document
-          .getElementById("modalOverlay")
-          .addEventListener("click", (e) => {
-            if (e.target === e.currentTarget) closeModal();
-          });
-        document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape") closeModal();
+        // Pagination
+        document.getElementById("pagePrev").addEventListener("click", () => { if (currentPage > 0) { currentPage--; render(); } });
+        document.getElementById("pageNext").addEventListener("click", () => {
+          const total = applyFilters().length;
+          if ((currentPage + 1) * PAGE_SIZE < total) { currentPage++; render(); }
         });
-        window.addEventListener("popstate", () => {
-          loadState();
-          render();
-        });
+
+        // Modal
+        document.getElementById("modalClose").addEventListener("click", closeModal);
+        document.getElementById("modalOverlay").addEventListener("click", (e) => { if (e.target === e.currentTarget) closeModal(); });
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+        window.addEventListener("popstate", () => { loadState(); render(); });
 
         render();
       }
