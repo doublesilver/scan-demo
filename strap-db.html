@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>스트랩 통합 DB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --navy: #1a2332;
+        --navy-light: #243044;
+        --navy-muted: #2d3f55;
+        --orange: #e8734a;
+        --orange-light: #f08a66;
+        --off-white: #f5f5f3;
+        --white: #ffffff;
+        --gray-100: #f0f0ee;
+        --gray-200: #e2e2df;
+        --gray-400: #9b9b96;
+        --gray-600: #5c5c58;
+        --line-20: #3b82f6;
+        --line-22: #10b981;
+        --line-ultra: #e8734a;
+        --line-trex: #ef4444;
+      }
+
+      body {
+        font-family: "Noto Sans KR", "DM Sans", sans-serif;
+        background: var(--off-white);
+        color: var(--navy);
+        min-height: 100vh;
+      }
+
+      /* HEADER */
+      header {
+        background: var(--navy);
+        padding: 32px 24px 28px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      header::before {
+        content: "";
+        position: absolute;
+        top: -60px;
+        right: -40px;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: rgba(232, 115, 74, 0.07);
+        pointer-events: none;
+      }
+
+      .header-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header-title {
+        font-family: "DM Sans", "Noto Sans KR", sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--white);
+        letter-spacing: -0.5px;
+      }
+
+      .header-title span {
+        color: var(--orange);
+      }
+
+      .header-subtitle {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.45);
+        margin-top: 4px;
+        font-weight: 300;
+        letter-spacing: 0.2px;
+      }
+
+      .stats-row {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+        flex-wrap: wrap;
+      }
+
+      .stat-card {
+        background: var(--navy-light);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 12px;
+        padding: 14px 20px;
+        min-width: 140px;
+        flex: 1;
+        max-width: 200px;
+      }
+
+      .stat-number {
+        font-family: "DM Sans", sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--white);
+        line-height: 1;
+      }
+
+      .stat-number em {
+        font-style: normal;
+        color: var(--orange);
+      }
+
+      .stat-label {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: 5px;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+
+      /* FILTER BAR */
+      .filter-bar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--white);
+        border-bottom: 1px solid var(--gray-200);
+        padding: 14px 24px;
+        box-shadow: 0 2px 12px rgba(26, 35, 50, 0.08);
+      }
+
+      .filter-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .filter-search-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .filter-search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-400);
+        width: 16px;
+        height: 16px;
+        pointer-events: none;
+      }
+
+      .filter-search {
+        width: 100%;
+        padding: 9px 12px 9px 36px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 8px;
+        font-family: "Noto Sans KR", sans-serif;
+        font-size: 13px;
+        color: var(--navy);
+        background: var(--off-white);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .filter-search:focus {
+        border-color: var(--orange);
+        background: var(--white);
+      }
+
+      .filter-select {
+        padding: 9px 30px 9px 12px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 8px;
+        font-family: "Noto Sans KR", sans-serif;
+        font-size: 13px;
+        color: var(--navy);
+        background: var(--off-white);
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239b9b96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        transition: border-color 0.2s;
+      }
+
+      .filter-select:focus {
+        border-color: var(--orange);
+        background-color: var(--white);
+      }
+
+      .filter-count {
+        font-size: 12px;
+        color: var(--gray-400);
+        white-space: nowrap;
+        font-weight: 500;
+        margin-left: auto;
+        padding: 0 4px;
+      }
+
+      .filter-count strong {
+        color: var(--navy);
+        font-weight: 600;
+      }
+
+      /* GRID */
+      .grid-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+
+      @media (max-width: 900px) {
+        .product-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .stat-card {
+          max-width: none;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .product-grid {
+          grid-template-columns: 1fr;
+        }
+        .header-title {
+          font-size: 20px;
+        }
+        .stat-number {
+          font-size: 22px;
+        }
+        .filter-inner {
+          gap: 8px;
+        }
+        .filter-select {
+          font-size: 12px;
+        }
+        .grid-section {
+          padding: 16px;
+        }
+      }
+
+      /* PRODUCT CARD */
+      .product-card {
+        background: var(--white);
+        border-radius: 14px;
+        border: 1px solid var(--gray-200);
+        padding: 18px;
+        cursor: pointer;
+        transition:
+          transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.22s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(26, 35, 50, 0.12);
+        border-color: rgba(232, 115, 74, 0.3);
+      }
+
+      .card-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        justify-content: space-between;
+      }
+
+      .line-badge {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: 4px;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .line-20mm {
+        background: rgba(59, 130, 246, 0.12);
+        color: #2563eb;
+      }
+      .line-22mm {
+        background: rgba(16, 185, 129, 0.12);
+        color: #059669;
+      }
+      .line-ultra {
+        background: rgba(232, 115, 74, 0.15);
+        color: #c0582e;
+      }
+      .line-trex {
+        background: rgba(239, 68, 68, 0.12);
+        color: #dc2626;
+      }
+      .line-default {
+        background: var(--gray-100);
+        color: var(--gray-600);
+      }
+
+      .card-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--navy);
+        line-height: 1.4;
+        letter-spacing: -0.2px;
+      }
+
+      .card-meta {
+        font-size: 12px;
+        color: var(--gray-600);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .card-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .card-meta-dot {
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: var(--gray-400);
+        flex-shrink: 0;
+      }
+
+      .tags-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .model-tag {
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 20px;
+        background: var(--gray-100);
+        color: var(--gray-600);
+        border: 1px solid var(--gray-200);
+        white-space: nowrap;
+      }
+
+      .model-tag-more {
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 20px;
+        background: var(--navy);
+        color: var(--white);
+        border: 1px solid var(--navy);
+        white-space: nowrap;
+        font-weight: 500;
+      }
+
+      .color-line {
+        font-size: 11px;
+        color: var(--gray-400);
+        border-top: 1px solid var(--gray-100);
+        padding-top: 8px;
+      }
+
+      .color-line strong {
+        color: var(--gray-600);
+        font-weight: 500;
+      }
+
+      /* MODAL */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 22, 36, 0.6);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+        backdrop-filter: blur(4px);
+      }
+
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .modal {
+        background: var(--white);
+        border-radius: 18px;
+        max-width: 600px;
+        width: 100%;
+        max-height: 85vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(20px) scale(0.97);
+        transition: transform 0.28s cubic-bezier(0.34, 1.4, 0.64, 1);
+        box-shadow: 0 24px 64px rgba(15, 22, 36, 0.28);
+      }
+
+      .modal-overlay.active .modal {
+        transform: translateY(0) scale(1);
+      }
+
+      .modal-header {
+        background: var(--navy);
+        padding: 24px;
+        position: relative;
+      }
+
+      .modal-line-badge {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        display: inline-block;
+        letter-spacing: 0.3px;
+      }
+
+      .modal-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--white);
+        line-height: 1.35;
+        letter-spacing: -0.4px;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: none;
+        background: rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--white);
+      }
+
+      .modal-body {
+        padding: 24px;
+        overflow-y: auto;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .modal-section-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gray-400);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+      }
+
+      .attr-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .attr-item {
+        background: var(--off-white);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+
+      .attr-key {
+        font-size: 10px;
+        color: var(--gray-400);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .attr-val {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--navy);
+        margin-top: 3px;
+      }
+
+      .sku-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      .sku-table th {
+        text-align: left;
+        padding: 8px 10px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--gray-400);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .sku-table td {
+        padding: 9px 10px;
+        color: var(--navy);
+        border-bottom: 1px solid var(--gray-100);
+        font-size: 12px;
+      }
+
+      .sku-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .sku-table tr:hover td {
+        background: var(--off-white);
+      }
+
+      .modal-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .modal-model-tag {
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        background: var(--off-white);
+        color: var(--gray-600);
+        border: 1px solid var(--gray-200);
+      }
+
+      /* EMPTY STATE */
+      .empty-state {
+        text-align: center;
+        padding: 80px 24px;
+        color: var(--gray-400);
+      }
+
+      .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.4;
+      }
+
+      .empty-state-text {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--gray-600);
+      }
+
+      .empty-state-sub {
+        font-size: 13px;
+        color: var(--gray-400);
+        margin-top: 6px;
+      }
+
+      /* LOADING */
+      .loading-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        gap: 16px;
+        background: var(--off-white);
+      }
+
+      .loading-spinner {
+        width: 36px;
+        height: 36px;
+        border: 3px solid var(--gray-200);
+        border-top-color: var(--orange);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        font-size: 14px;
+        color: var(--gray-400);
+      }
+
+      .error-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        gap: 12px;
+        text-align: center;
+        padding: 24px;
+      }
+
+      .error-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--navy);
+      }
+
+      .error-sub {
+        font-size: 13px;
+        color: var(--gray-400);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">데이터 로딩 중...</p>
+    </div>
+
+    <div id="app" style="display: none">
+      <header>
+        <div class="header-inner">
+          <h1 class="header-title">스트랩 <span>통합 DB</span></h1>
+          <p class="header-subtitle">
+            제품 데이터 관리 시스템 데모 · SpaceShield
+          </p>
+          <div class="stats-row" id="stats-row"></div>
+        </div>
+      </header>
+
+      <div class="filter-bar">
+        <div class="filter-inner">
+          <div class="filter-search-wrap">
+            <svg
+              class="filter-search-icon"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <circle cx="7" cy="7" r="5" />
+              <path d="M11 11l3 3" />
+            </svg>
+            <input
+              type="search"
+              id="search-input"
+              class="filter-search"
+              placeholder="제품명으로 검색"
+            />
+          </div>
+          <select id="line-filter" class="filter-select">
+            <option value="">전체 라인업</option>
+            <option value="20mm 일반형">20mm 일반형</option>
+            <option value="22mm 일반형">22mm 일반형</option>
+            <option value="갤럭시 울트라">갤럭시 울트라</option>
+            <option value="티렉스">티렉스</option>
+          </select>
+          <span class="filter-count" id="result-count"
+            ><strong>250</strong>개 제품</span
+          >
+        </div>
+      </div>
+
+      <div class="grid-section">
+        <div class="product-grid" id="product-grid"></div>
+        <div id="empty-state" class="empty-state" style="display: none">
+          <div class="empty-state-icon">🔍</div>
+          <p class="empty-state-text">검색 결과가 없습니다</p>
+          <p class="empty-state-sub">다른 검색어 또는 필터를 사용해 보세요</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal" id="modal">
+        <div class="modal-header" id="modal-header">
+          <button class="modal-close" id="modal-close">×</button>
+          <div id="modal-line-badge"></div>
+          <h2 class="modal-name" id="modal-name"></h2>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+      </div>
+    </div>
+
+    <script>
+      const LINE_BADGE = {
+        "20mm 일반형": { cls: "line-20mm", label: "20mm 일반형" },
+        "22mm 일반형": { cls: "line-22mm", label: "22mm 일반형" },
+        "갤럭시 울트라": { cls: "line-ultra", label: "갤럭시 울트라" },
+        티렉스: { cls: "line-trex", label: "티렉스" },
+      };
+
+      const LINE_MODAL_COLORS = {
+        "20mm 일반형": "rgba(59,130,246,0.15); color:#2563eb",
+        "22mm 일반형": "rgba(16,185,129,0.15); color:#059669",
+        "갤럭시 울트라": "rgba(232,115,74,0.2); color:#c0582e",
+        티렉스: "rgba(239,68,68,0.15); color:#dc2626",
+      };
+
+      function lineBadgeClass(line) {
+        if (!line) return "line-default";
+        if (line.includes("20mm")) return "line-20mm";
+        if (line.includes("22mm")) return "line-22mm";
+        if (line.includes("울트라")) return "line-ultra";
+        if (line.includes("티렉스")) return "line-trex";
+        return "line-default";
+      }
+
+      function esc(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function getColors(product) {
+        const colors = product.skus
+          .map((s) => s.color)
+          .filter(Boolean)
+          .map((c) => c.replace(/\n/g, " / ").trim());
+        return [...new Set(colors)];
+      }
+
+      function renderCard(product) {
+        const badge = LINE_BADGE[product.product_line] || {
+          cls: "line-default",
+          label: product.product_line || "기타",
+        };
+        const models = product.compatible_models || [];
+        const colors = getColors(product);
+        const maxTags = 5;
+        const shownModels = models.slice(0, maxTags);
+        const moreCount = models.length - maxTags;
+
+        const tagsHtml =
+          models.length > 0
+            ? `
+    <div class="tags-row">
+      ${shownModels.map((m) => `<span class="model-tag">${esc(m.model_name)}</span>`).join("")}
+      ${moreCount > 0 ? `<span class="model-tag-more">+${moreCount}개</span>` : ""}
+    </div>`
+            : "";
+
+        const colorHtml =
+          colors.length > 0
+            ? `
+    <div class="color-line">
+      <strong>색상</strong> ${esc(colors.join(" · "))}
+    </div>`
+            : "";
+
+        const formHtml = product.form_type
+          ? `<span class="card-meta-item">${esc(product.form_type)}</span>`
+          : "";
+
+        const div = document.createElement("div");
+        div.className = "product-card";
+        div.innerHTML = `
+    <div class="card-top">
+      <span class="line-badge ${badge.cls}">${esc(badge.label)}</span>
+    </div>
+    <p class="card-name">${esc(product.name)}</p>
+    ${formHtml ? `<div class="card-meta">${formHtml}</div>` : ""}
+    ${tagsHtml}
+    ${colorHtml}
+  `;
+        div.addEventListener("click", () => openModal(product));
+        return div;
+      }
+
+      function openModal(product) {
+        const overlay = document.getElementById("modal-overlay");
+        const badge = LINE_BADGE[product.product_line] || {
+          cls: "line-default",
+          label: product.product_line || "기타",
+        };
+        const modalBadgeStyle = LINE_MODAL_COLORS[product.product_line]
+          ? `background:${LINE_MODAL_COLORS[product.product_line]}`
+          : "background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)";
+
+        document.getElementById("modal-line-badge").innerHTML =
+          `<span class="modal-line-badge" style="${modalBadgeStyle}">${esc(badge.label)}</span>`;
+        document.getElementById("modal-name").textContent = product.name;
+
+        const body = document.getElementById("modal-body");
+        const attrs = [];
+        if (product.form_type) attrs.push({ k: "규격", v: product.form_type });
+        if (product.brand) attrs.push({ k: "브랜드", v: product.brand });
+        if (product.launch_status) {
+          const statusMap = {
+            draft: "출시 준비",
+            active: "출시",
+            discontinued: "단종",
+          };
+          attrs.push({
+            k: "상태",
+            v: statusMap[product.launch_status] || product.launch_status,
+          });
+        }
+
+        const skus = product.skus || [];
+        const models = product.compatible_models || [];
+
+        const attrsHtml =
+          attrs.length > 0
+            ? `
+    <div>
+      <p class="modal-section-title">기본 정보</p>
+      <div class="attr-grid">
+        ${attrs
+          .map(
+            (a) => `
+          <div class="attr-item">
+            <div class="attr-key">${esc(a.k)}</div>
+            <div class="attr-val">${esc(a.v)}</div>
+          </div>`,
+          )
+          .join("")}
+      </div>
+    </div>`
+            : "";
+
+        const skusHtml =
+          skus.length > 0
+            ? `
+    <div>
+      <p class="modal-section-title">SKU 목록 (${skus.length}개)</p>
+      <table class="sku-table">
+        <thead>
+          <tr>
+            <th>색상</th>
+            <th>사이즈</th>
+            <th>재고</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${skus
+            .map(
+              (s) => `
+            <tr>
+              <td>${esc(s.color?.replace(/\n/g, " / ") || "—")}</td>
+              <td>${esc(s.size_option || "—")}</td>
+              <td>${s.stock_quantity ?? 0}</td>
+            </tr>`,
+            )
+            .join("")}
+        </tbody>
+      </table>
+    </div>`
+            : "";
+
+        const modelsHtml =
+          models.length > 0
+            ? `
+    <div>
+      <p class="modal-section-title">호환 모델 (${models.length}개)</p>
+      <div class="modal-tags">
+        ${models.map((m) => `<span class="modal-model-tag">${esc(m.brand)} ${esc(m.model_name)}</span>`).join("")}
+      </div>
+    </div>`
+            : "";
+
+        body.innerHTML = attrsHtml + skusHtml + modelsHtml;
+        overlay.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        document.getElementById("modal-overlay").classList.remove("active");
+        document.body.style.overflow = "";
+      }
+
+      document
+        .getElementById("modal-close")
+        .addEventListener("click", closeModal);
+      document
+        .getElementById("modal-overlay")
+        .addEventListener("click", (e) => {
+          if (e.target === e.currentTarget) closeModal();
+        });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+
+      let allProducts = [];
+
+      function renderGrid(products) {
+        const grid = document.getElementById("product-grid");
+        const empty = document.getElementById("empty-state");
+        const count = document.getElementById("result-count");
+
+        grid.innerHTML = "";
+        count.innerHTML = `<strong>${products.length}</strong>개 제품`;
+
+        if (products.length === 0) {
+          grid.style.display = "none";
+          empty.style.display = "block";
+          return;
+        }
+
+        grid.style.display = "grid";
+        empty.style.display = "none";
+        const frag = document.createDocumentFragment();
+        products.forEach((p) => frag.appendChild(renderCard(p)));
+        grid.appendChild(frag);
+      }
+
+      function applyFilters() {
+        const query = document
+          .getElementById("search-input")
+          .value.trim()
+          .toLowerCase();
+        const line = document.getElementById("line-filter").value;
+
+        const filtered = allProducts.filter((p) => {
+          const matchName = !query || p.name.toLowerCase().includes(query);
+          const matchLine = !line || p.product_line === line;
+          return matchName && matchLine;
+        });
+
+        renderGrid(filtered);
+      }
+
+      document
+        .getElementById("search-input")
+        .addEventListener("input", applyFilters);
+      document
+        .getElementById("line-filter")
+        .addEventListener("change", applyFilters);
+
+      fetch("./data.json")
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        })
+        .then((data) => {
+          allProducts = data.products || [];
+
+          const statsRow = document.getElementById("stats-row");
+          statsRow.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-number"><em>${data.stats?.products ?? allProducts.length}</em></div>
+        <div class="stat-label">총 제품</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><em>${data.stats?.skus ?? 0}</em></div>
+        <div class="stat-label">총 SKU</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number"><em>${data.stats?.watch_models ?? 0}</em></div>
+        <div class="stat-label">호환 모델</div>
+      </div>
+    `;
+
+          renderGrid(allProducts);
+          document.getElementById("loading-screen").style.display = "none";
+          document.getElementById("app").style.display = "block";
+        })
+        .catch((err) => {
+          document.getElementById("loading-screen").innerHTML = `
+      <div class="error-screen">
+        <p class="error-title">데이터 로딩 실패</p>
+        <p class="error-sub">data.json 파일을 찾을 수 없습니다.<br>웹서버 환경에서 실행해 주세요.</p>
+        <p class="error-sub" style="margin-top:8px;font-size:11px;color:#9b9b96;">${esc(err.message)}</p>
+      </div>`;
+        });
+    </script>
+  </body>
+</html>
