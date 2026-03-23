@@ -280,12 +280,36 @@
       .view-panel.active { display: block; }
 
       /* ========== MATRIX VIEW ========== */
-      .matrix-wrap { overflow-x: auto; }
+      .matrix-wrap {
+        overflow: auto;
+        max-height: calc(100vh - 300px);
+        border: 1px solid rgba(197,198,204,0.15);
+        border-radius: 6px;
+        background: var(--surface-container-lowest);
+      }
       .matrix-table { border-collapse: separate; border-spacing: 0; white-space: nowrap; min-width: 100%; }
-      .matrix-table th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--on-surface-variant); opacity: 0.4; padding: 10px 8px; border-bottom: 1px solid var(--surface-container-high); text-align: center; position: sticky; top: 64px; background: var(--background); z-index: 5; }
-      .matrix-table th.row-head { text-align: left; min-width: 200px; padding-left: 0; position: sticky; left: 0; background: var(--background); z-index: 6; }
-      .matrix-table td { padding: 4px; border-bottom: 1px solid rgba(197,198,204,0.1); }
-      .matrix-table td.row-head { font-size: 13px; font-weight: 600; color: var(--primary); padding: 8px 16px 8px 0; cursor: pointer; position: sticky; left: 0; background: var(--background); z-index: 4; transition: color 0.15s; white-space: nowrap; }
+      .matrix-table th {
+        font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+        color: var(--on-surface-variant); opacity: 0.5; padding: 12px 8px;
+        border-bottom: 2px solid var(--surface-container-high);
+        text-align: center; position: sticky; top: 0;
+        background: var(--surface-container-lowest); z-index: 10;
+      }
+      .matrix-table th.row-head {
+        text-align: left; min-width: 220px; padding-left: 16px;
+        position: sticky; left: 0; top: 0;
+        background: var(--surface-container-lowest); z-index: 11;
+        border-right: 2px solid var(--surface-container-high);
+      }
+      .matrix-table td { padding: 4px; border-bottom: 1px solid rgba(197,198,204,0.08); }
+      .matrix-table td.row-head {
+        font-size: 13px; font-weight: 600; color: var(--primary);
+        padding: 8px 16px; cursor: pointer;
+        position: sticky; left: 0;
+        background: var(--surface-container-lowest); z-index: 5;
+        border-right: 2px solid var(--surface-container-high);
+        transition: color 0.15s; white-space: nowrap; max-width: 250px; overflow: hidden; text-overflow: ellipsis;
+      }
       .matrix-table td.row-head:hover { color: var(--secondary); }
       .matrix-table tr:hover td { background: var(--surface-container-low); }
       .matrix-table tr:hover td.row-head { background: var(--surface-container-low); }
