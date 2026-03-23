@@ -706,6 +706,16 @@
       }
 
       @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+      /* Toast */
+      .toast {
+        position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+        background: var(--primary-container); color: white; padding: 12px 24px;
+        border-radius: 8px; font-size: 13px; font-weight: 500; z-index: 9999;
+        box-shadow: 0 8px 24px rgba(26,35,50,0.2); transition: transform 0.3s;
+        pointer-events: none;
+      }
+      .toast.show { transform: translateX(-50%) translateY(0); }
     </style>
   </head>
   <body>
@@ -716,11 +726,11 @@
           <div class="sb-logo-icon"><span class="material-symbols-outlined">inventory_2</span></div>
           <div>
             <h1>STRP-DB</h1>
-            <div class="sb-logo-sub">Strategic Architect</div>
+            <div class="sb-logo-sub">스트랩 통합 관리</div>
           </div>
         </div>
         <button class="sb-add-btn">
-          <span>Add New SKU</span>
+          <span>신규 제품 등록</span>
           <span class="material-symbols-outlined">add</span>
         </button>
       </div>
@@ -748,8 +758,8 @@
       </nav>
 
       <div class="sb-bottom">
-        <div class="sb-nav-item"><span class="material-symbols-outlined">settings</span><span>Settings</span></div>
-        <div class="sb-nav-item"><span class="material-symbols-outlined">help_outline</span><span>Support</span></div>
+        <div class="sb-nav-item"><span class="material-symbols-outlined">settings</span><span>설정</span></div>
+        <div class="sb-nav-item"><span class="material-symbols-outlined">help_outline</span><span>고객지원</span></div>
       </div>
     </aside>
 
@@ -760,7 +770,7 @@
         <div class="topbar-left">
           <div class="topbar-search">
             <span class="material-symbols-outlined">search</span>
-            <input type="text" id="searchInput" placeholder="Search SKU, name, or material..." />
+            <input type="text" id="searchInput" placeholder="제품명, 재질, 체결방식 검색..." />
           </div>
         </div>
         <div class="topbar-right">
@@ -787,22 +797,22 @@
         <!-- Stats Row -->
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-label">Total Assets</div>
+            <div class="stat-label">총 제품</div>
             <div class="stat-value" id="statTotal">-</div>
             <div class="stat-bg-icon"><span class="material-symbols-outlined">inventory_2</span></div>
           </div>
           <div class="stat-card accent-green">
-            <div class="stat-label">Live Status</div>
+            <div class="stat-label">출시 완료</div>
             <div class="stat-value green" id="statLive">-</div>
             <div class="stat-sub" id="statLiveSub"></div>
           </div>
           <div class="stat-card accent-orange">
-            <div class="stat-label">In Pipeline</div>
+            <div class="stat-label">출시 대기</div>
             <div class="stat-value orange" id="statPipeline">-</div>
             <div class="stat-sub muted" id="statPipelineSub"></div>
           </div>
           <div class="stat-card accent-primary">
-            <div class="stat-label">Active Materials</div>
+            <div class="stat-label">재질 종류</div>
             <div class="stat-value" id="statMaterials">-</div>
             <div class="stat-dots" id="statDots"></div>
           </div>
@@ -811,7 +821,7 @@
         <!-- Content Header -->
         <div class="content-header">
           <div>
-            <h2>All Product SKUs</h2>
+            <h2>전체 제품 목록</h2>
             <p>스트랩 인벤토리 관리 및 런칭 현황 추적</p>
           </div>
           <div class="content-header-right">
@@ -868,10 +878,10 @@
         <!-- Right: Info -->
         <section class="modal-info-section">
           <div class="modal-tabs">
-            <button class="modal-tab active" data-tab="basic">Basic Info</button>
-            <button class="modal-tab" data-tab="colors">SKU & Colors</button>
-            <button class="modal-tab" data-tab="compat">Compatibility</button>
-            <button class="modal-tab" data-tab="links">Links & Pricing</button>
+            <button class="modal-tab active" data-tab="basic">기본 정보</button>
+            <button class="modal-tab" data-tab="colors">컬러 옵션</button>
+            <button class="modal-tab" data-tab="compat">호환 기종</button>
+            <button class="modal-tab" data-tab="links">링크 & 가격</button>
           </div>
           <div class="modal-tab-content" id="modalTabContent"></div>
           <div class="modal-footer" id="modalFooter"></div>
@@ -883,7 +893,7 @@
     <div class="sku-modal-overlay" id="skuModalOverlay">
       <div class="sku-modal">
         <div class="modal-header">
-          <h2>Add New SKU</h2>
+          <h2>신규 제품 등록</h2>
           <button class="modal-close" id="skuModalClose">✕</button>
         </div>
         <div class="sku-form">
@@ -939,8 +949,8 @@
             <div class="sku-field">
               <label>상태</label>
               <select>
-                <option value="active">Launched</option>
-                <option value="pipeline">In Pipeline</option>
+                <option value="active">출시됨</option>
+                <option value="pipeline">출시 대기</option>
               </select>
             </div>
           </div>
@@ -954,8 +964,8 @@
             </div>
           </div>
           <div class="sku-actions">
-            <button class="sku-btn-cancel" id="skuCancel">Cancel</button>
-            <button class="sku-btn-save">Save SKU</button>
+            <button class="sku-btn-cancel" id="skuCancel">취소</button>
+            <button class="sku-btn-save" onclick="showToast('제품이 등록되었습니다 (데모)')">저장</button>
           </div>
         </div>
       </div>
@@ -1076,7 +1086,7 @@
       function cardHTML(p, i) {
         const col = CAT_COLORS[p.category] || { bg: "#f0f0ee", text: "#5c5c58" };
         const statusClass = p.status === "active" ? "launched" : "pipeline";
-        const statusLabel = p.status === "active" ? "Launched" : "In Pipeline";
+        const statusLabel = p.status === "active" ? "출시됨" : "출시 대기";
         const colorsCount = p.colors ? p.colors.split(",").length + " Colors" : "";
 
         const imgEl = p.image_url
@@ -1089,7 +1099,7 @@
     ${imgEl}
     <div class="card-img-overlay"></div>
     <div class="card-status"><span class="status-badge ${statusClass}">${statusLabel}</span></div>
-    <button class="card-edit-btn" onclick="event.stopPropagation()"><span class="material-symbols-outlined">edit</span></button>
+    <button class="card-edit-btn" onclick="event.stopPropagation();showToast('제품 수정 — 준비 중입니다')" ><span class="material-symbols-outlined">edit</span></button>
   </div>
   <div class="card-body">
     <div class="card-name-row">
@@ -1204,8 +1214,8 @@
             ? `<img class="table-img" src="${p.image_url}" alt="" loading="lazy" onerror="this.outerHTML='<div class=table-img-placeholder><span class=material-symbols-outlined>image</span></div>'">`
             : `<div class="table-img-placeholder"><span class="material-symbols-outlined">image</span></div>`;
           const statusBadge = p.status === "active"
-            ? '<span style="color:#166534;background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600">Launched</span>'
-            : '<span style="color:#e8734a;background:rgba(232,115,74,0.1);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600">Pipeline</span>';
+            ? '<span style="color:#166534;background:#dcfce7;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600">출시됨</span>'
+            : '<span style="color:#e8734a;background:rgba(232,115,74,0.1);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600">대기</span>';
           const colorsCount = p.colors ? p.colors.split(",").length : "-";
           return `<tr data-idx="${i}">
             <td>${imgEl}</td>
@@ -1242,8 +1252,8 @@
 
         // Status
         const statusBadge = p.status === "active"
-          ? '<span class="modal-badge green">Launched</span>'
-          : '<span class="modal-badge orange">In Pipeline</span>';
+          ? '<span class="modal-badge green">출시됨</span>'
+          : '<span class="modal-badge orange">출시 대기</span>';
 
         // Basic Info tab
         const basicTab = `
@@ -1255,12 +1265,12 @@
             ${p.size ? `<span class="modal-badge neutral" style="font-family:'DM Mono',monospace">${p.size}</span>` : ''}
           </div>
           <div class="specs-grid">
-            <div><div class="spec-label">Category</div><div class="spec-value">${p.category}</div></div>
-            <div><div class="spec-label">Fastening</div><div class="spec-value">${p.fastening || '-'}</div></div>
-            <div><div class="spec-label">Size</div><div class="spec-value mono">${p.size || '-'}</div></div>
-            <div><div class="spec-label">Type</div><div class="spec-value">${p.type || '-'}</div></div>
+            <div><div class="spec-label">카테고리</div><div class="spec-value">${p.category}</div></div>
+            <div><div class="spec-label">체결방식</div><div class="spec-value">${p.fastening || '-'}</div></div>
+            <div><div class="spec-label">사이즈</div><div class="spec-value mono">${p.size || '-'}</div></div>
+            <div><div class="spec-label">구분/형태</div><div class="spec-value">${p.type || '-'}</div></div>
           </div>
-          ${p.connector ? `<div class="info-card"><div class="info-card-label">Connector</div><div style="font-size:13px">${p.connector}</div></div>` : ''}
+          ${p.connector ? `<div class="info-card"><div class="info-card-label">커넥터</div><div style="font-size:13px">${p.connector}</div></div>` : ''}
         `;
 
         // Colors tab
@@ -1275,13 +1285,13 @@
 
         const colorsTab = `
           <div style="margin-bottom:16px">
-            <div style="font-size:11px;opacity:0.35;text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:4px">Total Variants</div>
+            <div style="font-size:11px;opacity:0.35;text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:4px">컬러 옵션 수</div>
             <div style="font-size:28px;font-family:'Manrope',sans-serif;font-weight:800">${colors.length}</div>
           </div>
           <table style="width:100%;text-align:left;font-size:13px">
             <thead><tr style="font-size:11px;opacity:0.35;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;border-bottom:1px solid rgba(197,198,204,0.1)">
-              <th style="padding:8px 0;font-weight:600">SKU Code</th>
-              <th style="padding:8px 0;font-weight:600">Color</th>
+              <th style="padding:8px 0;font-weight:600">SKU 코드</th>
+              <th style="padding:8px 0;font-weight:600">컬러</th>
             </tr></thead>
             <tbody style="font-weight:500">${colorRows}</tbody>
           </table>
@@ -1311,7 +1321,7 @@
               <div style="font-size:28px;font-family:'Manrope',sans-serif;font-weight:800;color:var(--secondary)">${parseInt(p.price).toLocaleString()}<span style="font-size:14px;opacity:0.6">원</span></div>
             </div>` : ''}
           ${links.length ? `
-            <div style="font-size:11px;opacity:0.35;text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:12px">External Links</div>
+            <div style="font-size:11px;opacity:0.35;text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:12px">외부 링크</div>
             <div class="link-list">
               ${links.map(([k, url, plain]) => `<div class="link-item"><span class="link-label">${k}</span>${url ? `<a href="${url}" target="_blank" rel="noopener">${url}</a>` : (plain || '')}</div>`).join('')}
             </div>` : '<div style="opacity:0.3;padding:40px 0;text-align:center">링크 정보 없음</div>'}
@@ -1329,11 +1339,11 @@
         // Footer
         document.getElementById("modalFooter").innerHTML = `
           <div class="modal-footer-price">
-            ${p.price ? `<div class="price-label">Price</div><div class="price-value">${parseInt(p.price).toLocaleString()}원</div>` : '<div class="price-label">Price</div><div class="price-value" style="opacity:0.2">-</div>'}
+            ${p.price ? `<div class="price-label">판매가</div><div class="price-value">${parseInt(p.price).toLocaleString()}원</div>` : '<div class="price-label">판매가</div><div class="price-value" style="opacity:0.2">-</div>'}
           </div>
           <div class="modal-footer-actions" style="display:flex;gap:8px">
-            <button class="modal-btn-outline">DOWNLOAD DATA</button>
-            <button class="modal-btn-primary">EDIT SKU</button>
+            <button class="modal-btn-outline" onclick="event.stopPropagation();showToast('데이터 내보내기 — 준비 중입니다')">데이터 내보내기</button>
+            <button class="modal-btn-primary" onclick="event.stopPropagation();showToast('제품 수정 — 준비 중입니다')">제품 수정</button>
           </div>
         `;
 
@@ -1384,9 +1394,9 @@
         document.getElementById("totalBadge").textContent = total.toLocaleString();
         document.getElementById("statTotal").innerHTML = `${total.toLocaleString()} <span>개</span>`;
         document.getElementById("statLive").innerHTML = `${liveCount.toLocaleString()} <span>개</span>`;
-        document.getElementById("statLiveSub").innerHTML = `<span class="material-symbols-outlined" style="font-size:14px">trending_up</span> Active products`;
+        document.getElementById("statLiveSub").innerHTML = `<span class="material-symbols-outlined" style="font-size:14px">trending_up</span> 활성 제품`;
         document.getElementById("statPipeline").innerHTML = `${pipelineCount.toLocaleString()} <span>개</span>`;
-        document.getElementById("statPipelineSub").textContent = "Pending launch";
+        document.getElementById("statPipelineSub").textContent = "출시 예정";
         document.getElementById("statMaterials").innerHTML = `${matCount} <span>종</span>`;
 
         // Material dots
@@ -1477,7 +1487,33 @@
         document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeModal(); closeSkuModal(); } });
         window.addEventListener("popstate", () => { loadState(); render(); });
 
+        // Non-functional button handlers
+        document.querySelectorAll('.sb-bottom .sb-nav-item').forEach(el => {
+          el.addEventListener('click', () => {
+            const text = el.querySelector('span:last-child').textContent.trim();
+            showToast(text + ' — 준비 중입니다');
+          });
+        });
+        document.querySelectorAll('.topbar-icon').forEach(el => {
+          el.addEventListener('click', () => showToast('준비 중인 기능입니다'));
+        });
+        document.querySelector('.topbar-avatar').addEventListener('click', () => showToast('프로필 설정 — 준비 중입니다'));
+
         render();
+      }
+
+      function showToast(msg) {
+        let t = document.getElementById('toastEl');
+        if (!t) {
+          t = document.createElement('div');
+          t.id = 'toastEl';
+          t.className = 'toast';
+          document.body.appendChild(t);
+        }
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => t.classList.remove('show'), 2000);
       }
 
       init();
