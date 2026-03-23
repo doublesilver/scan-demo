@@ -473,55 +473,149 @@
       .fab:hover { transform: scale(1.1); }
       .fab .material-symbols-outlined { font-size: 24px; font-variation-settings: 'FILL' 1; }
 
-      /* MODAL */
+      /* PRODUCT DETAIL MODAL — Stitch Split Panel */
       .modal-overlay {
-        position: fixed; inset: 0;
-        background: rgba(26,35,50,0.45);
-        backdrop-filter: blur(4px);
-        z-index: 1000;
+        position: fixed; inset: 0; background: rgba(26,35,50,0.5);
+        backdrop-filter: blur(6px); z-index: 1000;
         display: flex; align-items: center; justify-content: center;
-        padding: 20px;
-        opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
       }
       .modal-overlay.open { opacity: 1; pointer-events: auto; }
-      .modal {
+
+      .modal-panel {
         background: var(--surface-container-lowest);
-        border-radius: 12px; width: 100%; max-width: 520px;
-        max-height: 85vh; overflow-y: auto;
-        transform: scale(0.95) translateY(10px); transition: transform 0.2s;
-        box-shadow: 0 12px 40px rgba(26,28,27,0.06);
+        border-radius: 12px; width: 100%; max-width: 1100px;
+        height: 80vh; max-height: 750px;
+        display: flex; overflow: hidden; position: relative;
+        box-shadow: 0 24px 80px rgba(26,28,27,0.12);
+        transform: scale(0.95); transition: transform 0.2s;
+        border: 1px solid rgba(197,198,204,0.15);
       }
-      .modal-overlay.open .modal { transform: scale(1) translateY(0); }
-      .modal-header {
-        padding: 24px 24px 16px;
-        border-bottom: 1px solid rgba(197,198,204,0.25);
-        position: sticky; top: 0; background: var(--surface-container-lowest); z-index: 1;
-      }
-      .modal-header h2 {
-        font-size: 18px; font-weight: 700; color: var(--primary);
-        font-family: 'Manrope', 'Noto Sans KR', sans-serif;
-        line-height: 1.4; padding-right: 32px;
-      }
+      .modal-overlay.open .modal-panel { transform: scale(1); }
+
       .modal-close {
-        position: absolute; right: 20px; top: 20px;
-        background: var(--surface-container-low); border: none;
-        width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
-        font-size: 16px; display: flex; align-items: center; justify-content: center;
-        color: var(--on-surface-variant); transition: background 0.15s;
+        position: absolute; right: 16px; top: 16px; z-index: 10;
+        background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+        border: none; width: 32px; height: 32px; border-radius: 50%;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        color: var(--on-surface); transition: background 0.15s;
       }
-      .modal-close:hover { background: var(--surface-container-high); }
-      .modal-body { padding: 20px 24px 24px; }
-      .modal-img { width: 100%; max-height: 280px; object-fit: contain; background: var(--surface-container-low); border-radius: 6px; margin-bottom: 16px; }
-      .modal-img-placeholder { width: 100%; height: 180px; background: var(--surface-container-low); border-radius: 6px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; }
-      .modal-img-placeholder .material-symbols-outlined { font-size: 48px; color: var(--on-surface-variant); opacity: 0.1; }
-      .modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-      .modal-tag { font-size: 11px; padding: 4px 10px; border-radius: 4px; background: var(--surface-container-high); color: var(--on-surface-variant); }
-      .detail-grid { display: grid; grid-template-columns: 100px 1fr; gap: 10px 12px; }
-      .detail-key { font-size: 12px; color: var(--on-surface-variant); opacity: 0.45; font-weight: 500; padding-top: 1px; }
-      .detail-val { font-size: 13px; color: var(--on-surface); word-break: break-all; }
-      .detail-val a { color: var(--secondary); text-decoration: none; }
-      .detail-val a:hover { opacity: 0.7; }
-      .modal-divider { height: 1px; background: var(--surface-container-high); margin: 14px 0; }
+      .modal-close:hover { background: rgba(255,255,255,0.5); }
+
+      /* Left: Image */
+      .modal-img-section {
+        width: 50%; height: 100%; background: var(--surface);
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden; position: relative;
+      }
+      .modal-img-section img {
+        max-width: 85%; max-height: 85%; object-fit: contain;
+        transition: transform 0.3s;
+      }
+      .modal-img-section:hover img { transform: scale(1.03); }
+      .modal-img-section .img-empty {
+        display: flex; align-items: center; justify-content: center;
+        width: 100%; height: 100%;
+      }
+      .modal-img-section .img-empty .material-symbols-outlined {
+        font-size: 72px; color: var(--on-surface-variant); opacity: 0.08;
+      }
+
+      /* Right: Info */
+      .modal-info-section {
+        width: 50%; height: 100%; display: flex; flex-direction: column;
+        border-left: 1px solid rgba(197,198,204,0.15);
+      }
+
+      /* Tabs */
+      .modal-tabs {
+        padding: 24px 28px 0; display: flex; gap: 20px;
+        border-bottom: 1px solid rgba(197,198,204,0.1); flex-shrink: 0;
+      }
+      .modal-tab {
+        padding-bottom: 12px; font-size: 12px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.08em;
+        color: var(--on-surface-variant); opacity: 0.35;
+        cursor: pointer; border: none; border-bottom: 2px solid transparent;
+        transition: all 0.15s; background: none; font-family: inherit;
+      }
+      .modal-tab:hover { opacity: 0.6; }
+      .modal-tab.active { color: var(--secondary); opacity: 1; border-bottom-color: var(--secondary); }
+
+      /* Tab Content */
+      .modal-tab-content { flex: 1; overflow-y: auto; padding: 24px 28px; }
+      .modal-tab-content::-webkit-scrollbar { width: 3px; }
+      .modal-tab-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 10px; }
+      .modal-tab-pane { display: none; }
+      .modal-tab-pane.active { display: block; }
+
+      /* Product Identity */
+      .modal-material-label { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--secondary); text-transform: uppercase; letter-spacing: 0.2em; }
+      .modal-product-name { font-size: 24px; font-family: 'Manrope', 'Noto Sans KR', sans-serif; font-weight: 800; color: var(--on-surface); letter-spacing: -0.02em; margin: 4px 0 12px; line-height: 1.3; }
+      .modal-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+      .modal-badge { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+      .modal-badge.green { background: #dcfce7; color: #166534; }
+      .modal-badge.orange { background: rgba(232,115,74,0.1); color: var(--secondary); }
+      .modal-badge.neutral { background: var(--surface-container); color: var(--on-surface-variant); }
+
+      /* Specs Grid */
+      .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 40px; margin-bottom: 24px; }
+      .spec-label { font-size: 11px; color: var(--on-surface); opacity: 0.35; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; margin-bottom: 4px; }
+      .spec-value { font-size: 14px; font-weight: 500; color: var(--on-surface); }
+      .spec-value.mono { font-family: 'DM Mono', monospace; }
+
+      /* Info Card */
+      .info-card { background: var(--surface-container-low); padding: 14px 16px; border-radius: 6px; margin-bottom: 20px; }
+      .info-card-label { font-size: 11px; color: var(--on-surface); opacity: 0.35; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; margin-bottom: 8px; }
+
+      /* Compatibility Badges */
+      .compat-list { display: flex; flex-wrap: wrap; gap: 6px; }
+      .compat-badge {
+        display: flex; align-items: center; gap: 6px;
+        padding: 6px 12px; background: var(--surface);
+        border: 1px solid rgba(197,198,204,0.2); border-radius: 6px;
+        font-size: 12px; font-weight: 500;
+      }
+
+      /* Color dots */
+      .color-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; vertical-align: middle; margin-right: 6px; border: 1px solid rgba(0,0,0,0.08); }
+
+      /* Link list */
+      .link-list { display: flex; flex-direction: column; gap: 10px; }
+      .link-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+      .link-item a { color: var(--secondary); text-decoration: none; word-break: break-all; }
+      .link-item a:hover { opacity: 0.7; }
+      .link-label { font-size: 11px; color: var(--on-surface-variant); opacity: 0.45; font-weight: 600; min-width: 70px; }
+
+      /* Modal Footer */
+      .modal-footer {
+        padding: 16px 28px; border-top: 1px solid rgba(197,198,204,0.15);
+        display: flex; align-items: center; justify-content: space-between;
+        background: var(--surface-container-lowest); flex-shrink: 0;
+      }
+      .modal-footer-price .price-label { font-size: 10px; color: var(--on-surface); opacity: 0.35; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; }
+      .modal-footer-price .price-value { font-size: 20px; font-family: 'Manrope', sans-serif; font-weight: 800; color: var(--on-surface); }
+      .modal-btn-outline {
+        padding: 10px 16px; border: 1px solid var(--outline); border-radius: 6px;
+        background: transparent; font-size: 12px; font-weight: 700;
+        color: var(--on-surface); cursor: pointer; font-family: inherit; transition: background 0.15s;
+      }
+      .modal-btn-outline:hover { background: var(--surface-container); }
+      .modal-btn-primary {
+        padding: 10px 16px; border: none; border-radius: 6px;
+        background: var(--primary-container); color: white;
+        font-size: 12px; font-weight: 700; cursor: pointer;
+        font-family: inherit; transition: all 0.15s;
+        box-shadow: 0 4px 12px rgba(26,35,50,0.15);
+      }
+      .modal-btn-primary:hover { opacity: 0.9; }
+
+      @media (max-width: 768px) {
+        .modal-panel { flex-direction: column; height: 90vh; max-height: none; }
+        .modal-img-section { width: 100%; height: 35%; }
+        .modal-info-section { width: 100%; height: 65%; border-left: none; border-top: 1px solid rgba(197,198,204,0.15); }
+        .specs-grid { grid-template-columns: 1fr; gap: 12px; }
+      }
 
       /* Table / List View */
       .product-table { width: 100%; border-collapse: separate; border-spacing: 0; display: none; }
@@ -765,14 +859,23 @@
     <!-- FAB -->
     <button class="fab" id="fabBtn"><span class="material-symbols-outlined">add</span></button>
 
-    <!-- Product Detail Modal -->
+    <!-- Product Detail Modal — Split Panel -->
     <div class="modal-overlay" id="modalOverlay">
-      <div class="modal" id="modal" style="max-width:600px">
-        <div class="modal-header">
-          <h2 id="modalTitle"></h2>
-          <button class="modal-close" id="modalClose">✕</button>
-        </div>
-        <div class="modal-body" id="modalBody"></div>
+      <div class="modal-panel">
+        <button class="modal-close" id="modalClose"><span class="material-symbols-outlined">close</span></button>
+        <!-- Left: Image -->
+        <section class="modal-img-section" id="modalImgSection"></section>
+        <!-- Right: Info -->
+        <section class="modal-info-section">
+          <div class="modal-tabs">
+            <button class="modal-tab active" data-tab="basic">Basic Info</button>
+            <button class="modal-tab" data-tab="colors">SKU & Colors</button>
+            <button class="modal-tab" data-tab="compat">Compatibility</button>
+            <button class="modal-tab" data-tab="links">Links & Pricing</button>
+          </div>
+          <div class="modal-tab-content" id="modalTabContent"></div>
+          <div class="modal-footer" id="modalFooter"></div>
+        </section>
       </div>
     </div>
 
@@ -1120,7 +1223,7 @@
         });
       }
 
-      /* ====== Product Detail Modal (Enhanced) ====== */
+      /* ====== Product Detail Modal — Split Panel ====== */
       function openModal(idx) {
         const filtered = applyFilters();
         const start = currentPage * PAGE_SIZE;
@@ -1128,53 +1231,127 @@
         if (!p) return;
 
         const col = CAT_COLORS[p.category] || { bg: "#f0f0ee", text: "#5c5c58" };
-        document.getElementById("modalTitle").textContent = p.name;
 
-        // Image
-        const imgHtml = p.image_url
-          ? `<img class="modal-img" src="${p.image_url}" alt="${p.name}" onerror="this.outerHTML='<div class=modal-img-placeholder><span class=material-symbols-outlined>image</span></div>'">`
-          : `<div class="modal-img-placeholder"><span class="material-symbols-outlined">image</span></div>`;
+        // Image section
+        const imgSection = document.getElementById("modalImgSection");
+        if (p.image_url) {
+          imgSection.innerHTML = `<img src="${p.image_url}" alt="${p.name}" onerror="this.outerHTML='<div class=img-empty><span class=material-symbols-outlined>image</span></div>'">`;
+        } else {
+          imgSection.innerHTML = `<div class="img-empty"><span class="material-symbols-outlined">image</span></div>`;
+        }
 
-        // Tags row
-        const tags = [
-          `<span class="modal-tag" style="background:${col.bg};color:${col.text};font-weight:600">${p.category}</span>`,
-          p.material ? `<span class="modal-tag">${p.material}</span>` : '',
-          p.fastening ? `<span class="modal-tag">${p.fastening}</span>` : '',
-          p.size ? `<span class="modal-tag" style="font-family:'DM Mono',monospace">${p.size}</span>` : '',
-          p.status === "active"
-            ? '<span class="modal-tag" style="background:#dcfce7;color:#166534;font-weight:600">Launched</span>'
-            : '<span class="modal-tag" style="background:rgba(232,115,74,0.1);color:#e8734a;font-weight:600">In Pipeline</span>',
-        ].filter(Boolean).join('');
+        // Status
+        const statusBadge = p.status === "active"
+          ? '<span class="modal-badge green">Launched</span>'
+          : '<span class="modal-badge orange">In Pipeline</span>';
 
-        const rows = [
-          p.type && p.type !== p.material && ["구분/형태", p.type],
-          p.colors && ["컬러 옵션", p.colors],
-          p.compatible_models && ["호환 기종", p.compatible_models],
-          p.connector && ["커넥터", p.connector],
-        ].filter(Boolean);
+        // Basic Info tab
+        const basicTab = `
+          <div class="modal-material-label">${p.material || 'N/A'}</div>
+          <div class="modal-product-name">${p.name}</div>
+          <div class="modal-badges">
+            ${statusBadge}
+            <span class="modal-badge neutral" style="background:${col.bg};color:${col.text}">${p.category}</span>
+            ${p.size ? `<span class="modal-badge neutral" style="font-family:'DM Mono',monospace">${p.size}</span>` : ''}
+          </div>
+          <div class="specs-grid">
+            <div><div class="spec-label">Category</div><div class="spec-value">${p.category}</div></div>
+            <div><div class="spec-label">Fastening</div><div class="spec-value">${p.fastening || '-'}</div></div>
+            <div><div class="spec-label">Size</div><div class="spec-value mono">${p.size || '-'}</div></div>
+            <div><div class="spec-label">Type</div><div class="spec-value">${p.type || '-'}</div></div>
+          </div>
+          ${p.connector ? `<div class="info-card"><div class="info-card-label">Connector</div><div style="font-size:13px">${p.connector}</div></div>` : ''}
+        `;
 
+        // Colors tab
+        const colors = p.colors ? p.colors.split(/[,、]/).map(c => c.trim()).filter(Boolean) : [];
+        const colorRows = colors.length ? colors.map((c, i) => {
+          const hue = (i * 37) % 360;
+          return `<tr>
+            <td style="font-family:'DM Mono',monospace;font-size:12px">${p.category.substring(0,2).toUpperCase()}-${String(i+1).padStart(2,'0')}</td>
+            <td><span class="color-dot" style="background:hsl(${hue},40%,50%)"></span>${c}</td>
+          </tr>`;
+        }).join('') : '<tr><td colspan="2" style="opacity:0.3;padding:20px 0;text-align:center">컬러 정보 없음</td></tr>';
+
+        const colorsTab = `
+          <div style="margin-bottom:16px">
+            <div style="font-size:11px;opacity:0.35;text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:4px">Total Variants</div>
+            <div style="font-size:28px;font-family:'Manrope',sans-serif;font-weight:800">${colors.length}</div>
+          </div>
+          <table style="width:100%;text-align:left;font-size:13px">
+            <thead><tr style="font-size:11px;opacity:0.35;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;border-bottom:1px solid rgba(197,198,204,0.1)">
+              <th style="padding:8px 0;font-weight:600">SKU Code</th>
+              <th style="padding:8px 0;font-weight:600">Color</th>
+            </tr></thead>
+            <tbody style="font-weight:500">${colorRows}</tbody>
+          </table>
+        `;
+
+        // Compatibility tab
+        const models = p.compatible_models ? p.compatible_models.split(/[,、]/).map(m => m.trim()).filter(Boolean) : [];
+        const compatTab = models.length
+          ? `<div style="margin-bottom:12px;font-size:11px;opacity:0.35;text-transform:uppercase;letter-spacing:0.12em;font-weight:600">호환 기종 (${models.length})</div>
+             <div class="compat-list">${models.map(m =>
+               `<div class="compat-badge"><span class="material-symbols-outlined" style="font-size:16px;color:#16a34a;font-variation-settings:'FILL' 1">check_circle</span>${m}</div>`
+             ).join('')}</div>`
+          : `<div style="opacity:0.3;padding:40px 0;text-align:center">호환 기종 정보 없음</div>`;
+
+        // Links & Pricing tab
         const links = [
           p.coupang_url && p.coupang_url.startsWith("http") && ["쿠팡", p.coupang_url],
           p.ss_url && p.ss_url.startsWith("http") && ["스페이스쉴드", p.ss_url],
           p.url_1688 && p.url_1688.startsWith("http") && ["1688", p.url_1688],
-          p.nas_path && p.nas_path !== "링크" && ["NAS 경로", null, p.nas_path],
+          p.nas_path && p.nas_path !== "링크" && ["NAS", null, p.nas_path],
         ].filter(Boolean);
 
-        const priceRow = p.price
-          ? `<div class="modal-divider"></div>
-  <div style="font-size:22px;font-weight:800;color:var(--secondary);font-family:'Manrope',sans-serif">${parseInt(p.price).toLocaleString()}<span style="font-size:14px;font-weight:500;opacity:0.6">원</span></div>`
-          : "";
+        const linksTab = `
+          ${p.price ? `
+            <div style="margin-bottom:24px">
+              <div style="font-size:11px;opacity:0.35;text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:4px">판매가</div>
+              <div style="font-size:28px;font-family:'Manrope',sans-serif;font-weight:800;color:var(--secondary)">${parseInt(p.price).toLocaleString()}<span style="font-size:14px;opacity:0.6">원</span></div>
+            </div>` : ''}
+          ${links.length ? `
+            <div style="font-size:11px;opacity:0.35;text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:12px">External Links</div>
+            <div class="link-list">
+              ${links.map(([k, url, plain]) => `<div class="link-item"><span class="link-label">${k}</span>${url ? `<a href="${url}" target="_blank" rel="noopener">${url}</a>` : (plain || '')}</div>`).join('')}
+            </div>` : '<div style="opacity:0.3;padding:40px 0;text-align:center">링크 정보 없음</div>'}
+        `;
 
-        document.getElementById("modalBody").innerHTML = `
-  ${imgHtml}
-  <div class="modal-tags">${tags}</div>
-  ${rows.length ? `<div class="detail-grid">
-    ${rows.map(([k, v]) => `<div class="detail-key">${k}</div><div class="detail-val">${v}</div>`).join("")}
-  </div>` : ""}
-  ${links.length ? `<div class="modal-divider"></div><div class="detail-grid">
-    ${links.map(([k, url, plain]) => `<div class="detail-key">${k}</div><div class="detail-val">${url ? `<a href="${url}" target="_blank" rel="noopener">${url}</a>` : plain || ""}</div>`).join("")}
-  </div>` : ""}
-  ${priceRow}`;
+        // Render tabs
+        const tabContent = document.getElementById("modalTabContent");
+        tabContent.innerHTML = `
+          <div class="modal-tab-pane active" data-pane="basic">${basicTab}</div>
+          <div class="modal-tab-pane" data-pane="colors">${colorsTab}</div>
+          <div class="modal-tab-pane" data-pane="compat">${compatTab}</div>
+          <div class="modal-tab-pane" data-pane="links">${linksTab}</div>
+        `;
+
+        // Footer
+        document.getElementById("modalFooter").innerHTML = `
+          <div class="modal-footer-price">
+            ${p.price ? `<div class="price-label">Price</div><div class="price-value">${parseInt(p.price).toLocaleString()}원</div>` : '<div class="price-label">Price</div><div class="price-value" style="opacity:0.2">-</div>'}
+          </div>
+          <div class="modal-footer-actions" style="display:flex;gap:8px">
+            <button class="modal-btn-outline">DOWNLOAD DATA</button>
+            <button class="modal-btn-primary">EDIT SKU</button>
+          </div>
+        `;
+
+        // Tab switching
+        document.querySelectorAll('.modal-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.modal-tab-pane').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            tabContent.querySelector(`[data-pane="${tab.dataset.tab}"]`).classList.add('active');
+          });
+        });
+
+        // Reset to first tab
+        document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.modal-tab-pane').forEach(p => p.classList.remove('active'));
+        document.querySelector('.modal-tab[data-tab="basic"]').classList.add('active');
+        document.querySelector('.modal-tab-pane[data-pane="basic"]').classList.add('active');
 
         document.getElementById("modalOverlay").classList.add("open");
       }
